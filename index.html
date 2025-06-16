@@ -531,5 +531,125 @@
       return false;
     }
   </script>
+
+ <!-- CDX Chatbot -->
+<div id="cdx-chatbot">
+  <div class="chat-header">CDX AI Assistant</div>
+  <div class="chat-body" id="chat-body">
+    <div class="bot">Halo! Saya CDX Bot. Ada yang bisa saya bantu?</div>
+  </div>
+  <input type="text" id="user-input" placeholder="Tulis pertanyaan..." />
+</div>
+<div id="chat-toggle">💬</div>
+
+<style>
+  #cdx-chatbot {
+    position: fixed;
+    bottom: 80px;
+    right: 30px;
+    width: 280px;
+    background: #0f2027;
+    border: 1px solid #0ff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px #0ff;
+    display: none;
+    flex-direction: column;
+    font-family: 'Segoe UI', sans-serif;
+    z-index: 9999;
+  }
+
+  .chat-header {
+    padding: 10px;
+    background: #203a43;
+    color: #0ff;
+    font-weight: bold;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  .chat-body {
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    color: #fff;
+  }
+
+  #user-input {
+    border: none;
+    border-top: 1px solid #0ff;
+    padding: 10px;
+    background: #2c5364;
+    color: #fff;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  #chat-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    background: #0ff;
+    color: #000;
+    padding: 10px 15px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 10px #0ff;
+    z-index: 9999;
+  }
+
+  .bot, .user {
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    border-radius: 8px;
+  }
+
+  .user {
+    text-align: right;
+    background: rgba(0,255,255,0.1);
+  }
+</style>
+
+<script>
+  const chatToggle = document.getElementById("chat-toggle");
+  const chatbot = document.getElementById("cdx-chatbot");
+  const chatBody = document.getElementById("chat-body");
+  const userInput = document.getElementById("user-input");
+
+  chatToggle.onclick = () => {
+    chatbot.style.display = chatbot.style.display === "flex" ? "none" : "flex";
+  };
+
+  userInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      const msg = userInput.value.trim();
+      if (msg) {
+        chatBody.innerHTML += `<div class="user">${msg}</div>`;
+        userInput.value = "";
+        setTimeout(() => {
+          const reply = getBotReply(msg);
+          chatBody.innerHTML += `<div class="bot">${reply}</div>`;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 500);
+      }
+    }
+  });
+
+  function getBotReply(msg) {
+    msg = msg.toLowerCase();
+    if (msg.includes("harga") || msg.includes("biaya"))
+      return "Harga mulai dari Rp299.000 ya! 😎";
+    if (msg.includes("paket"))
+      return "Kami punya 3 paket: Basic, Premium, Ultimate. Mau yang mana?";
+    if (msg.includes("order") || msg.includes("pesan"))
+      return "Klik link bio atau hubungi WhatsApp kami untuk order langsung.";
+    if (msg.includes("contoh"))
+      return "Cek halaman portfolio untuk lihat contoh desain kami.";
+    return "Maaf saya belum mengerti. Coba tanya dengan kata lain ya 🙏";
+  }
+</script>
+
 </body>
 </html>
