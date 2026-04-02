@@ -2,23 +2,24 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Trader X Academy · Pips Profit Style</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Trader X Academy Jurnal</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.2s ease, color 0.2s, border 0.2s;
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
         body {
             background-color: #0A0C10;
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
             color: #EFF3F8;
             padding-bottom: 72px;
         }
 
+        /* scroll */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #1E2229; }
         ::-webkit-scrollbar-thumb { background: #2E3A45; border-radius: 8px; }
@@ -31,6 +32,7 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
+        /* header */
         .app-header {
             padding: 20px 16px 8px 16px;
             border-bottom: 1px solid var(--border-color, #1E2229);
@@ -42,12 +44,16 @@
         .app-header h1 {
             font-size: 1.6rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #FFD966, #FFB347);
+            background: linear-gradient(135deg, #FFFFFF 0%, var(--accent, #00D09C) 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .app-header p { font-size: 0.7rem; color: #FFD966; margin-top: 4px; letter-spacing: 0.5px; }
+        .app-header p {
+            font-size: 0.7rem;
+            color: var(--accent, #00D09C);
+            margin-top: 4px;
+        }
 
         /* bottom nav */
         .bottom-nav {
@@ -61,7 +67,7 @@
             backdrop-filter: blur(12px);
             display: flex;
             justify-content: space-around;
-            padding: 10px 8px 18px;
+            padding: 8px 12px 20px;
             border-top: 1px solid var(--border-color, #232730);
             z-index: 20;
         }
@@ -72,7 +78,7 @@
             gap: 4px;
             background: none;
             border: none;
-            color: #8E9AAB;
+            color: #8A99AA;
             font-size: 0.65rem;
             font-weight: 500;
             cursor: pointer;
@@ -80,94 +86,135 @@
             border-radius: 40px;
         }
         .nav-item.active {
-            color: #FFB347;
-            background: rgba(255, 180, 71, 0.15);
+            color: var(--accent, #00D09C);
+            background: rgba(0, 208, 156, 0.1);
         }
         .nav-icon { font-size: 1.4rem; }
+
+        /* main content */
         .main-content { padding: 16px; }
 
-        /* cards */
+        /* card */
         .card {
             background: var(--card-bg, #12161C);
-            border-radius: 28px;
+            border-radius: 24px;
             padding: 18px 16px;
             margin-bottom: 18px;
             border: 1px solid var(--border-color, #20242C);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         .card-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 700;
-            color: #FFB347;
+            color: var(--accent, #00D09C);
             margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
         .stat-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 18px;
+            gap: 16px;
         }
         .stat-value {
             font-size: 1.8rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #FFF, #FFD966);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: white;
         }
         .win-text { color: #2ECC71; }
         .loss-text { color: #E74C3C; }
-        .btn-primary {
-            background: linear-gradient(95deg, #FFB347, #FF8C00);
-            border: none;
-            color: #0A0C10;
-            font-weight: 800;
-            padding: 10px 18px;
-            border-radius: 60px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 2px 6px rgba(255,140,0,0.3);
-        }
-        .btn-secondary {
-            background: #1E293B;
-            color: #FFD966;
-            border: 1px solid #FFB34740;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid #FFB347;
-            color: #FFB347;
-        }
         .row-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 12px;
+            margin-top: 10px;
         }
         hr { border-color: #2A3140; margin: 14px 0; }
-        .signal-item {
+
+        /* buttons */
+        .btn-primary {
+            background: var(--accent, #00D09C);
+            border: none;
+            color: #0A0C10;
+            font-weight: 700;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .btn-secondary {
+            background: #1E293B;
+            color: var(--accent, #00D09C);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--accent, #00D09C);
+            color: var(--accent, #00D09C);
+        }
+        .btn-small { padding: 6px 12px; font-size: 0.7rem; width: auto; }
+
+        /* trade item & journal */
+        .trade-item {
             background: #0F151E;
             border-radius: 20px;
             padding: 12px;
             margin-bottom: 12px;
-            border-left: 4px solid #FFB347;
+            border-left: 4px solid var(--accent, #00D09C);
         }
-        .master-card {
-            background: #0F151E;
-            border-radius: 24px;
-            padding: 12px;
-            margin-bottom: 12px;
+        .trade-profit { border-left-color: #2ECC71; }
+        .trade-loss { border-left-color: #E74C3C; }
+
+        /* chart sederhana */
+        .bar-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            gap: 12px;
+            justify-content: space-around;
+            margin-top: 16px;
         }
-        .badge-profit { background: #2ECC6E20; color: #2ECC6E; border-radius: 40px; padding: 4px 12px; font-size: 0.7rem; font-weight: bold; }
-        .empty-state { text-align: center; padding: 30px 16px; color: #8E9AAB; }
+        .bar-item { text-align: center; flex: 1; }
+        .bar {
+            background: #1E2A32;
+            height: 70px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        .bar-fill {
+            background: var(--accent, #00D09C);
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            transition: height 0.2s;
+            border-radius: 12px 12px 0 0;
+        }
+        .bar-fill.loss { background: #E74C3C; }
+
+        /* calendar grid */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            text-align: center;
+            margin-top: 12px;
+        }
+        .cal-day {
+            background: #10141C;
+            padding: 8px 4px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+        }
+        .cal-day.profit { background: #2ECC6E20; color: #2ECC6E; border: 1px solid #2ECC6E40; }
+        .cal-day.loss { background: #E74C3C20; color: #E74C3C; border: 1px solid #E74C3C40; }
+        .weekday { font-size: 0.7rem; color: #8A99AA; margin-bottom: 4px; }
+
+        /* modal */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -187,9 +234,9 @@
             background: var(--card-bg, #12161C);
             max-width: 340px;
             width: 90%;
-            border-radius: 36px;
+            border-radius: 32px;
             padding: 24px 20px;
-            border: 1px solid #FFB34750;
+            border: 1px solid var(--accent, #00D09C);
         }
         .modal-content input, .modal-content select, .modal-content textarea {
             width: 100%;
@@ -198,9 +245,42 @@
             border: 1px solid #2F3845;
             border-radius: 28px;
             color: white;
-            margin: 12px 0;
+            margin: 8px 0;
+        }
+        .symbol-quick {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 8px 0;
+        }
+        .symbol-chip {
+            background: #1E293B;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .direction-buttons {
+            display: flex;
+            gap: 16px;
+            margin: 8px 0;
+        }
+        .dir-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: #1E293B;
+            border-radius: 60px;
+            cursor: pointer;
+        }
+        .dir-btn.selected {
+            background: var(--accent, #00D09C);
+            color: #0A0C10;
         }
         .flex-buttons { display: flex; gap: 12px; margin-top: 16px; }
+        .empty-state { text-align: center; padding: 30px 16px; color: #8A99AA; }
+
+        /* theme options */
         .theme-option {
             display: flex;
             align-items: center;
@@ -212,199 +292,207 @@
             cursor: pointer;
             border: 1px solid transparent;
         }
-        .theme-option.selected { border-color: #FFB347; background: rgba(255,180,71,0.1); }
+        .theme-option.selected {
+            border-color: var(--accent, #00D09C);
+            background: rgba(0,208,156,0.1);
+        }
         .theme-color { width: 28px; height: 28px; border-radius: 28px; }
-        .trade-item {
-            background: #0F141C;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid #FFB347;
-        }
-        .trade-win { border-left-color: #2ECC71; }
-        .trade-loss { border-left-color: #E74C3C; }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            text-align: center;
-            margin-top: 12px;
-        }
-        .cal-day {
-            background: #10141C;
-            padding: 8px 4px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-        }
-        .cal-day.profit { background: #2ECC6E20; color: #2ECC6E; border: 1px solid #2ECC6E40; }
-        .cal-day.loss { background: #E74C3C20; color: #E74C3C; border: 1px solid #E74C3C40; }
     </style>
 </head>
 <body>
 <div class="app-container">
     <div class="app-header">
-        <h1>Trader X Academy</h1>
-        <p>⚡ Pips Profit · Copy & Journal</p>
+        <h1>Trader X Academy Jurnal</h1>
+        <p>Track, Analyze, Improve</p>
     </div>
     <div class="main-content" id="mainContent">Memuat...</div>
     <div class="bottom-nav">
-        <button class="nav-item" data-tab="home"><span class="nav-icon">📈</span><span>Home</span></button>
-        <button class="nav-item" data-tab="journal"><span class="nav-icon">📓</span><span>Journal</span></button>
-        <button class="nav-item" data-tab="signals"><span class="nav-icon">📡</span><span>Signals</span></button>
+        <button class="nav-item" data-tab="home"><span class="nav-icon">📊</span><span>Home</span></button>
+        <button class="nav-item" data-tab="journal"><span class="nav-icon">📒</span><span>Journal</span></button>
         <button class="nav-item" data-tab="calendar"><span class="nav-icon">📅</span><span>Calendar</span></button>
-        <button class="nav-item" data-tab="accounts"><span class="nav-icon">👤</span><span>Profile</span></button>
+        <button class="nav-item" data-tab="setup"><span class="nav-icon">⚙️</span><span>Trade Setup</span></button>
+        <button class="nav-item" data-tab="accounts"><span class="nav-icon">👤</span><span>Accounts</span></button>
     </div>
 </div>
 
-<!-- Modal Trade -->
-<div id="tradeModal" class="modal-overlay"><div class="modal-content"><h3>➕ New Trade (Pips)</h3><input type="text" id="tradeSymbol" placeholder="Pair / Asset" value="EUR/USD"><input type="date" id="tradeDate" value="2026-04-03"><input type="number" id="tradePnL" placeholder="Profit / Loss (USD)" step="any" value="0"><div class="flex-buttons"><button id="saveTradeBtn" class="btn-primary btn-small">Save Trade</button><button id="closeTradeModal" class="btn-secondary btn-small">Cancel</button></div></div></div>
-<div id="setupModal" class="modal-overlay"><div class="modal-content"><h3>📌 New Trade Setup</h3><input type="text" id="setupName" placeholder="Strategy name"><textarea id="setupDesc" placeholder="Description" rows="2"></textarea><div class="flex-buttons"><button id="saveSetupBtn" class="btn-primary btn-small">Create</button><button id="closeSetupModal" class="btn-secondary btn-small">Cancel</button></div></div></div>
+<!-- Modal New Trade -->
+<div id="tradeModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>➕ New Trade</h3>
+        <div class="symbol-quick">
+            <span class="symbol-chip" data-sym="XAUUSD">XAUUSD</span>
+            <span class="symbol-chip" data-sym="EURUSD">EURUSD</span>
+            <span class="symbol-chip" data-sym="GBPUSD">GBPUSD</span>
+            <span class="symbol-chip" data-sym="USDJPY">USDJPY</span>
+            <span class="symbol-chip" data-sym="GBPJPY">GBPJPY</span>
+        </div>
+        <input type="text" id="tradeSymbol" placeholder="Symbol" value="XAUUSD">
+        <input type="date" id="tradeDate" value="2026-04-03">
+        <div class="direction-buttons">
+            <div class="dir-btn" data-dir="BUY">BUY (LONG)</div>
+            <div class="dir-btn" data-dir="SELL">SELL (SHORT)</div>
+        </div>
+        <input type="number" id="lotSize" placeholder="Lot Size" step="0.01" value="1.00">
+        <input type="number" id="tradePnl" placeholder="P&L ($)" step="any" value="11.00">
+        <input type="number" id="commission" placeholder="Commission (optional)" step="any" value="0">
+        <div class="flex-buttons">
+            <button id="saveTradeBtn" class="btn-primary">Save Trade</button>
+            <button id="closeTradeModal" class="btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah Setup -->
+<div id="setupModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>📌 New Trade Setup</h3>
+        <input type="text" id="setupName" placeholder="Strategy name">
+        <textarea id="setupDesc" placeholder="Description" rows="2"></textarea>
+        <div class="flex-buttons"><button id="saveSetupBtn" class="btn-primary">Create</button><button id="closeSetupModal" class="btn-secondary">Cancel</button></div>
+    </div>
+</div>
+
+<!-- Modal Deposit/Withdraw -->
+<div id="fundModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 id="fundAction">Deposit</h3>
+        <input type="number" id="fundAmount" placeholder="Amount (USD)" step="any" value="0">
+        <div class="flex-buttons"><button id="confirmFundBtn" class="btn-primary">Confirm</button><button id="closeFundModal" class="btn-secondary">Cancel</button></div>
+    </div>
+</div>
+
+<!-- Modal Community Contributors -->
+<div id="contributorsModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>🙏 Community Contributors</h3>
+        <div style="margin: 16px 0; font-size:0.85rem">
+            <p><strong>REDDIT COMMUNITY</strong><br>CoffeeFX, Even_Competition2461, Mysterious_Drag_519, Few-Pepper858, Peppie79, Jerry Sonenarong</p>
+            <p><strong>VIA APP FEEDBACK</strong><br>Jamaal, Tahir Taskin</p>
+            <p><strong>PLAY STORE</strong><br>Serhii Smoliakov, Vhutali Ravhuhali, Ray Julian, Mugeesh K</p>
+        </div>
+        <button id="closeContributors" class="btn-primary btn-small">Close</button>
+    </div>
+</div>
 
 <script>
-    // Data utama
+    // Data
     let appData = {
         trades: [],
-        tradeSetups: [],
-        accounts: [{ id: Date.now(), name: "PipsMaster", broker: "Prop Firm" }],
-        followedMasters: [1], // id master yg diikuti
-        copiedSignals: [] // sinyal dari master yang di-copy
+        tradeSetups: [{ id: 1, name: "scalping", desc: "Scalping strategy", tradesCount: 0, totalPnl: 0, winRate: 0 }],
+        accounts: [{ id: 1, name: "Condex.s", starting: 20, current: 31 }],
+        theme: "neon-mint"
     };
 
-    // Master traders (simulasi Pips Profit)
-    const masterTraders = [
-        { id: 1, name: "AlphaSeeker", totalProfit: 12450, winRate: 78, followers: 342, avatar: "🐺", roi: 42.5 },
-        { id: 2, name: "CryptoKing", totalProfit: 8920, winRate: 68, followers: 189, avatar: "👑", roi: 31.2 },
-        { id: 3, name: "ForexGhost", totalProfit: 21300, winRate: 82, followers: 1050, avatar: "👻", roi: 67.8 }
-    ];
-
-    let activeTab = 'home';
-    let currentTheme = 'neon-mint';
+    // Theme definitions
     const themes = {
-        'pips-gold': { name: 'Pips Gold', accent: '#FFB347', bg: '#0D0A05', card: '#17130C', border: '#3E2E1A' },
-        'neon-mint': { name: 'Neon Mint', accent: '#00D09C', bg: '#0A0C10', card: '#12161C', border: '#20242C' },
         'electric-violet': { name: 'Electric Violet', accent: '#B567FF', bg: '#0A0418', card: '#14102A', border: '#2E2350' },
+        'neon-mint': { name: 'Neon Mint', accent: '#00D09C', bg: '#0A0C10', card: '#12161C', border: '#20242C' },
         'ocean-blue': { name: 'Ocean Blue', accent: '#2D9CDB', bg: '#0A1927', card: '#0E2433', border: '#1D4E6E' },
+        'golden-hour': { name: 'Golden Hour', accent: '#F2C94C', bg: '#1E1508', card: '#2A2010', border: '#5E4A1A' },
+        'minimalist': { name: 'Minimalist', accent: '#9CA3AF', bg: '#111111', card: '#1A1A1A', border: '#2C2C2C' },
+        'classic-ledger': { name: 'Classic Ledger', accent: '#D4AF37', bg: '#F5F2E6', card: '#FFFDF5', border: '#D1C7B8', textDark: true }
     };
 
     function applyTheme(themeId) {
         const t = themes[themeId];
         if (!t) return;
-        currentTheme = themeId;
         document.documentElement.style.setProperty('--accent', t.accent);
         document.documentElement.style.setProperty('--bg-primary', t.bg);
         document.documentElement.style.setProperty('--card-bg', t.card);
         document.documentElement.style.setProperty('--border-color', t.border);
         document.documentElement.style.setProperty('--nav-bg', t.card);
+        if (t.textDark) document.body.style.color = '#111';
+        else document.body.style.color = '#EFF3F8';
         localStorage.setItem('traderx_theme', themeId);
+        appData.theme = themeId;
+        saveToLocal();
     }
 
-    function loadTheme() { const saved = localStorage.getItem('traderx_theme'); if(saved && themes[saved]) applyTheme(saved); else applyTheme('pips-gold'); }
+    function loadTheme() { const saved = localStorage.getItem('traderx_theme'); if(saved && themes[saved]) applyTheme(saved); else applyTheme('neon-mint'); }
 
-    function saveToLocal() { localStorage.setItem('TraderX_Jurnal', JSON.stringify({ trades: appData.trades, tradeSetups: appData.tradeSetups, accounts: appData.accounts, followedMasters: appData.followedMasters })); }
+    function saveToLocal() { localStorage.setItem('TraderX_Jurnal_Data', JSON.stringify({ trades: appData.trades, tradeSetups: appData.tradeSetups, accounts: appData.accounts, theme: appData.theme })); }
     function loadData() {
-        const stored = localStorage.getItem('TraderX_Jurnal');
+        const stored = localStorage.getItem('TraderX_Jurnal_Data');
         if(stored) {
             try {
                 const p = JSON.parse(stored);
                 appData.trades = p.trades || [];
                 appData.tradeSetups = p.tradeSetups || [];
                 appData.accounts = p.accounts || [];
-                appData.followedMasters = p.followedMasters || [];
+                if(p.theme) appData.theme = p.theme;
             } catch(e) {}
         }
-        if(appData.accounts.length === 0) appData.accounts.push({ id: Date.now(), name: "PipsMaster", broker: "FTMO" });
-        if(!appData.followedMasters) appData.followedMasters = [1];
+        if(appData.accounts.length === 0) appData.accounts = [{ id: 1, name: "Condex.s", starting: 20, current: 20 }];
+        if(appData.tradeSetups.length === 0) appData.tradeSetups = [{ id: 1, name: "scalping", desc: "Scalping strategy", tradesCount: 0, totalPnl: 0, winRate: 0 }];
+        updateStrategyStats();
         saveToLocal();
     }
 
+    function updateStrategyStats() {
+        // update strategi berdasarkan trade (asumsi semua trade pakai strategi scalping untuk demo)
+        appData.tradeSetups.forEach(s => {
+            if(s.name === "scalping") {
+                const stratTrades = appData.trades.filter(t => t.strategy === "scalping" || true);
+                s.tradesCount = appData.trades.length;
+                s.totalPnl = appData.trades.reduce((sum,t)=> sum + t.pnl, 0);
+                const wins = appData.trades.filter(t => t.pnl > 0).length;
+                s.winRate = s.tradesCount ? (wins / s.tradesCount * 100) : 0;
+            }
+        });
+    }
+
+    // Helper stats
     function computeStats() {
         const trades = appData.trades;
         const wins = trades.filter(t => t.pnl > 0);
         const losses = trades.filter(t => t.pnl < 0);
-        const totalPnl = trades.reduce((s,t)=> s+t.pnl,0);
-        const grossProfit = wins.reduce((s,w)=> s+w.pnl,0);
-        const grossLoss = Math.abs(losses.reduce((s,l)=> s+l.pnl,0));
-        const profitFactor = grossLoss === 0 ? (grossProfit>0?grossProfit:0) : grossProfit/grossLoss;
-        const winRate = wins.length+losses.length === 0 ? 0 : (wins.length/(wins.length+losses.length)*100);
-        const totalDeposit = 10000; // asumsi deposit awal
-        const roi = totalDeposit > 0 ? (totalPnl / totalDeposit) * 100 : 0;
-        const maxDrawdown = computeDrawdown(trades);
-        return { totalPnl, winRate, tradesCount: trades.length, profitFactor, winsCount: wins.length, lossesCount: losses.length, roi, maxDrawdown, bestTrade: trades.length?Math.max(...trades.map(t=>t.pnl)):0, worstTrade: trades.length?Math.min(...trades.map(t=>t.pnl)):0 };
-    }
-    function computeDrawdown(trades) {
-        let peak = 0, drawdown = 0;
-        let running = 0;
-        for(let t of trades) {
-            running += t.pnl;
-            if(running > peak) peak = running;
-            let dd = peak - running;
-            if(dd > drawdown) drawdown = dd;
-        }
-        return drawdown;
-    }
-    function getSignalsFromMasters() {
-        // sinyal dari master yang diikuti (simulasi)
-        let signals = [];
-        if(appData.followedMasters.includes(1)) signals.push({ master: "AlphaSeeker", pair: "EUR/USD", direction: "BUY", entry: 1.0920, tp: 1.0980, sl: 1.0880, time: "10:24", profit: "+42 pips" });
-        if(appData.followedMasters.includes(2)) signals.push({ master: "CryptoKing", pair: "BTC/USD", direction: "SELL", entry: 68500, tp: 67000, sl: 69500, time: "09:15", profit: "active" });
-        if(appData.followedMasters.includes(3)) signals.push({ master: "ForexGhost", pair: "GBP/JPY", direction: "BUY", entry: 192.40, tp: 193.80, sl: 191.50, time: "08:00", profit: "+28 pips" });
-        if(signals.length === 0) signals.push({ master: "System", text: "Follow master traders to see live signals", profit: "info" });
-        return signals;
+        const totalPnl = trades.reduce((s,t)=> s + t.pnl, 0);
+        const winRate = wins.length + losses.length === 0 ? 0 : (wins.length / (wins.length + losses.length) * 100);
+        const avgWin = wins.length ? wins.reduce((s,w)=> s+w.pnl,0)/wins.length : 0;
+        const avgLoss = losses.length ? losses.reduce((s,l)=> s+l.pnl,0)/losses.length : 0;
+        const bestTrade = trades.length ? Math.max(...trades.map(t=>t.pnl)) : 0;
+        const worstTrade = trades.length ? Math.min(...trades.map(t=>t.pnl)) : 0;
+        const profitFactor = (wins.reduce((s,w)=> s+w.pnl,0) / Math.abs(losses.reduce((s,l)=> s+l.pnl,0))) || (wins.length?999:0);
+        return { totalPnl, winRate, tradesCount: trades.length, winsCount: wins.length, lossesCount: losses.length, breakeven: trades.filter(t=>t.pnl===0).length, avgWin, avgLoss, bestTrade, worstTrade, profitFactor };
     }
 
-    // RENDER HOME (dashboard dengan metrik Pips Profit)
+    function getPortfolioValue() { return appData.accounts.reduce((sum, acc) => sum + acc.current, 0); }
+    function getStartingValue() { return appData.accounts.reduce((sum, acc) => sum + acc.starting, 0); }
+    function getAllTimePercent() { const start = getStartingValue(); const curr = getPortfolioValue(); return start === 0 ? 0 : ((curr - start) / start * 100); }
+
+    // Render utama
+    let activeTab = 'home';
+
     function renderHome() {
         const stats = computeStats();
+        const portfolio = getPortfolioValue();
+        const percent = getAllTimePercent();
+        const last5 = getLast5DaysPnL();
+        const sessionData = getWinsLossesPerSession();
         const html = `
-            <div class="card"><div class="card-title">💼 EQUITY & ROI</div><div class="stat-value">$${stats.totalPnl.toFixed(2)}</div><div>ROI: ${stats.roi.toFixed(1)}%  |  Max DD: $${stats.maxDrawdown.toFixed(2)}</div><div class="row-flex"><span>Win Rate: ${stats.winRate.toFixed(0)}%</span><span>Profit Factor: ${stats.profitFactor.toFixed(2)}</span></div></div>
-            <div class="stat-grid"><div class="card"><div class="stat-value">${stats.tradesCount}</div><div>Total Trades</div></div><div class="card"><div class="stat-value">${stats.winsCount}</div><div>Wins</div></div><div class="card"><div class="stat-value">${stats.lossesCount}</div><div>Losses</div></div><div class="card"><div class="stat-value">${stats.winRate.toFixed(0)}%</div><div>Win rate</div></div></div>
-            <div class="card"><div class="card-title">📊 TOP MASTERS (Copy Pips)</div>${masterTraders.map(m => `<div class="master-card"><div><span style="font-size:1.4rem">${m.avatar}</span> <strong>${m.name}</strong><div style="font-size:0.7rem">ROI ${m.roi}% · Win ${m.winRate}%</div></div><div><span class="badge-profit">+$${m.totalProfit}</span><button class="follow-master btn-secondary btn-small" data-id="${m.id}" style="margin-left:12px; padding:4px 12px;">${appData.followedMasters.includes(m.id) ? '✅ Following' : 'Follow'}</button></div></div>`).join('')}</div>
-            <div class="card"><div class="card-title">⚡ LIVE SIGNALS (Copied)</div>${getSignalsFromMasters().map(s => `<div class="signal-item"><div>📡 ${s.master} · ${s.pair} ${s.direction || ''} @${s.entry || ''}<br><span style="font-size:0.7rem">TP ${s.tp || ''} SL ${s.sl || ''}</span></div><div class="win-text">${s.profit}</div></div>`).join('')}<button id="refreshSignalsHome" class="btn-secondary btn-small" style="margin-top:8px;">🔄 Refresh Signals</button></div>
-            <button class="btn-primary" id="fabNewTradeHome">+ New Trade (Pips)</button>
+            <div class="card"><div class="card-title">PORTFOLIO VALUE</div><div class="stat-value win-text">$${portfolio.toFixed(2)}</div><div>≈ ${percent>=0?'+':''}${percent.toFixed(2)}% all time</div></div>
+            <div class="stat-grid"><div class="card"><div class="stat-value">${stats.winRate.toFixed(0)}%</div><div>WIN RATE</div></div><div class="card"><div class="stat-value">${stats.tradesCount}</div><div>TRADES</div></div><div class="card"><div class="stat-value">${stats.profitFactor.toFixed(1)}</div><div>P. FACTOR</div></div><div class="card"><div class="stat-value">-</div><div>STREAK</div></div></div>
+            <div class="card"><div class="card-title">Performance</div><div class="row-flex"><span>Wins: ${stats.winsCount}</span><span>Losses: ${stats.lossesCount}</span><span>Breakeven: ${stats.breakeven}</span></div><hr><div class="row-flex"><span>BEST TRADE</span><span class="win-text">+$${stats.bestTrade.toFixed(2)}</span></div><div class="row-flex"><span>WORST TRADE</span><span class="loss-text">$${stats.worstTrade.toFixed(2)}</span></div><div class="row-flex"><span>AVG WIN</span><span class="win-text">+$${stats.avgWin.toFixed(2)}</span></div><div class="row-flex"><span>AVG LOSS</span><span class="loss-text">-$${Math.abs(stats.avgLoss).toFixed(2)}</span></div></div>
+            <div class="card"><div class="card-title">Trade Setup Analytics <span style="font-size:0.7rem">View all ></span></div>${appData.tradeSetups.map(s => `<div><strong>${s.name}</strong> - ${s.tradesCount} trades | ${s.winRate.toFixed(0)}% WR</div>`).join('')}<button id="openSetupFromHome" class="btn-secondary btn-small" style="margin-top:12px; width:100%">+ Create Your First Strategy</button></div>
+            <div class="card"><div class="card-title">Performance Breakdown (P&L - LAST 5 DAYS)</div><div class="bar-container">${last5.map(day => `<div class="bar-item"><div class="bar" style="height:50px; position:relative"><div style="height: ${Math.min(50, Math.max(0, (day.pnl/100)*50))}px; background:${day.pnl>=0 ? 'var(--accent)' : '#E74C3C'}; width:100%; position:absolute; bottom:0; border-radius:8px;"></div></div><div style="font-size:10px">${day.date}</div><div>$${day.pnl}</div></div>`).join('')}</div></div>
+            <div class="card"><div class="card-title">WINS VS LOSSES PER SESSION</div><div class="bar-container">${sessionData.map(s => `<div class="bar-item"><div class="bar" style="height:60px; position:relative"><div style="height: ${(s.wins/2)*50}px; background:var(--accent); width:45%; position:absolute; bottom:0; left:0;"></div><div style="height: ${(s.losses/2)*50}px; background:#E74C3C; width:45%; position:absolute; bottom:0; right:0;"></div></div><div style="font-size:9px">${s.session}</div><div>W:${s.wins} L:${s.losses}</div></div>`).join('')}</div></div>
+            <button class="btn-primary" id="fabNewTradeHome">+ New Trade</button>
         `;
         document.getElementById('mainContent').innerHTML = html;
         document.getElementById('fabNewTradeHome')?.addEventListener('click', openTradeModal);
-        document.querySelectorAll('.follow-master').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.dataset.id);
-                if(appData.followedMasters.includes(id)) appData.followedMasters = appData.followedMasters.filter(i => i !== id);
-                else appData.followedMasters.push(id);
-                saveToLocal();
-                renderHome();
-            });
-        });
-        document.getElementById('refreshSignalsHome')?.addEventListener('click', () => { renderHome(); });
+        document.getElementById('openSetupFromHome')?.addEventListener('click', openSetupModal);
     }
+
+    function getLast5DaysPnL() { const trades = appData.trades; const map = {}; trades.forEach(t=>{ map[t.date] = (map[t.date]||0)+t.pnl; }); const days = []; for(let i=4;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=d.toISOString().slice(0,10); days.push({date:ds.slice(5), pnl: map[ds]||0}); } return days; }
+    function getWinsLossesPerSession() { const sessions = ["Asia", "London", "NY"]; const result = sessions.map(s=> ({session:s, wins:0, losses:0})); appData.trades.forEach(t=>{ const session = t.session || "Asia"; const idx = sessions.indexOf(session); if(idx!==-1) { if(t.pnl>0) result[idx].wins++; else if(t.pnl<0) result[idx].losses++; } }); return result; }
 
     function renderJournal() {
         const trades = appData.trades;
-        const html = `<div class="card"><div class="card-title">📓 Journal · ${trades.length} trades logged</div>${trades.length === 0 ? `<div class="empty-state">📭 Belum ada trade. Klik +New Trade</div>` : trades.map(t => `<div class="trade-item ${t.pnl>0 ? 'trade-win' : 'trade-loss'}"><div><strong>${t.symbol}</strong> | ${t.date}</div><div>P&L: <span class="${t.pnl>=0?'win-text':'loss-text'}">$${t.pnl.toFixed(2)}</span></div><button class="delete-trade btn-small btn-secondary" data-id="${t.id}" style="margin-top:6px;">Hapus</button></div>`).join('')}</div>`;
+        const html = `<div class="card"><div class="card-title">Journal · ${trades.length} trades logged</div><div style="display:flex; gap:16px; margin-bottom:16px"><span style="border-bottom:2px solid var(--accent)">📝 Trades</span><span>📸 Screenshots</span></div>${trades.length === 0 ? `<div class="empty-state">📭 No trades logged yet<br><button id="firstTradeBtn" class="btn-primary btn-small" style="margin-top:12px">Log your first trade</button></div>` : trades.map(t => `<div class="trade-item trade-${t.pnl>=0?'profit':'loss'}"><div><strong>${t.symbol}</strong> | ${t.direction} | ${t.date} • ${t.session || 'Asia'}</div><div>P&L: <span class="${t.pnl>=0?'win-text':'loss-text'}">$${t.pnl.toFixed(2)}</span></div><button class="delete-trade btn-small btn-secondary" data-id="${t.id}" style="margin-top:6px;">Hapus</button></div>`).join('')}</div>`;
         document.getElementById('mainContent').innerHTML = html;
-        if(appData.trades.length === 0) {
-            const btn = document.createElement('button'); btn.className = 'btn-primary'; btn.innerText = '+ New Trade'; btn.style.marginTop='12px'; btn.addEventListener('click', openTradeModal);
-            document.getElementById('mainContent').appendChild(btn);
-        }
-        document.querySelectorAll('.delete-trade').forEach(btn => {
-            btn.addEventListener('click', () => { const id = parseInt(btn.dataset.id); appData.trades = appData.trades.filter(t => t.id !== id); saveToLocal(); renderJournal(); });
-        });
-    }
-
-    function renderSignals() {
-        const signals = getSignalsFromMasters();
-        const html = `<div class="card"><div class="card-title">📡 COPY TRADING · Pips Profit</div><div>Master Traders yang diikuti: ${appData.followedMasters.length} orang</div><hr>${signals.map(s => `<div class="signal-item" style="border-left-color:#FFB347"><div>🔔 <strong>${s.master}</strong> · ${s.pair || 'Signal'}</div><div>${s.direction ? `Entry: ${s.entry} | TP ${s.tp} | SL ${s.sl}` : s.text}</div><div class="win-text">${s.profit}</div><div><button class="btn-small btn-outline copy-this-signal" style="margin-top:6px;">Copy Trade (Simulate)</button></div></div>`).join('')}</div><div class="card"><div class="card-title">🤝 MASTER TRADER RANK</div>${masterTraders.map(m => `<div class="master-card"><div><b>${m.avatar} ${m.name}</b> <span style="font-size:0.7rem">ROI ${m.roi}% · Win ${m.winRate}%</span></div><div><span class="badge-profit">+$${m.totalProfit}</span><button class="follow-master-signal btn-small btn-secondary" data-id="${m.id}">${appData.followedMasters.includes(m.id)? 'Unfollow' : 'Follow'}</button></div></div>`).join('')}</div>`;
-        document.getElementById('mainContent').innerHTML = html;
-        document.querySelectorAll('.follow-master-signal').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.dataset.id);
-                if(appData.followedMasters.includes(id)) appData.followedMasters = appData.followedMasters.filter(i => i !== id);
-                else appData.followedMasters.push(id);
-                saveToLocal();
-                renderSignals();
-            });
-        });
-        document.querySelectorAll('.copy-this-signal').forEach(btn => {
-            btn.addEventListener('click', () => alert("Simulasi copy trade: posisi dibuka di akun demo. (Fitur Premium Pips Profit)"));
-        });
+        if(trades.length===0) document.getElementById('firstTradeBtn')?.addEventListener('click', openTradeModal);
+        document.querySelectorAll('.delete-trade').forEach(btn => { btn.addEventListener('click', () => { const id = parseInt(btn.dataset.id); appData.trades = appData.trades.filter(t => t.id !== id); updateAccountAfterTrade(); saveToLocal(); render(); }); });
+        if(trades.length>0) { const addBtn = document.createElement('button'); addBtn.className = 'btn-primary'; addBtn.innerText = '+ New Trade'; addBtn.style.marginTop='12px'; addBtn.addEventListener('click', openTradeModal); document.getElementById('mainContent').appendChild(addBtn); }
     }
 
     function renderCalendar() {
@@ -417,55 +505,128 @@
         for(let d=1;d<=daysInMonth;d++) calendarDays.push(d);
         const tradesByDate = {};
         appData.trades.forEach(t => { if(t.date.startsWith('2026-04')) tradesByDate[t.date.slice(8)] = (tradesByDate[t.date.slice(8)] || 0) + t.pnl; });
-        const html = `<div class="card"><div class="card-title">📅 April 2026 · P&L</div><div class="stat-value ${stats.totalPnl>=0?'win-text':'loss-text'}">${stats.totalPnl>=0?'+':''}$${stats.totalPnl.toFixed(2)}</div><div class="calendar-grid">${['S','M','T','W','T','F','S'].map(d=>`<div style="color:#FFB347">${d}</div>`).join('')}${calendarDays.map(day => { if(day===null) return `<div class="cal-day"></div>`; const pnlDay = tradesByDate[day.toString().padStart(2,'0')]||0; let cls = ''; if(pnlDay>0) cls='profit'; else if(pnlDay<0) cls='loss'; return `<div class="cal-day ${cls}">${day}</div>`; }).join('')}</div></div><div class="card"><div class="card-title">📈 Monthly Performance</div><div>Win streak: ${stats.winsCount>0?'🔥 '+stats.winsCount:'-'}</div></div>`;
+        const totalMonthly = appData.trades.filter(t=>t.date.startsWith('2026-04')).reduce((s,t)=>s+t.pnl,0);
+        const html = `<div class="card"><div class="card-title">April 2026</div><div class="stat-value ${totalMonthly>=0?'win-text':'loss-text'}">MONTHLY P&L: ${totalMonthly>=0?'+':''}$${totalMonthly.toFixed(2)}</div><div class="row-flex"><span>WIN RATE ${stats.winRate.toFixed(0)}%</span><span>STREAK -</span><span>TRADING DAYS ${Object.keys(tradesByDate).length}</span></div><div class="calendar-grid">${['SUN','MON','TUE','WED','THU','FRI','SAT'].map(d=>`<div class="weekday">${d.slice(0,3)}</div>`).join('')}${calendarDays.map(day => { if(day===null) return `<div class="cal-day"></div>`; const pnlDay = tradesByDate[day.toString().padStart(2,'0')]||0; let cls = ''; if(pnlDay>0) cls='profit'; else if(pnlDay<0) cls='loss'; return `<div class="cal-day ${cls}">${day}</div>`; }).join('')}</div></div><div class="card"><div class="card-title">Weekly Breakdown</div><div>Only trading day: +$${totalMonthly.toFixed(2)} (Apr 3)</div></div>`;
         document.getElementById('mainContent').innerHTML = html;
+    }
+
+    function renderTradeSetup() {
+        const html = `<div class="card"><div class="card-title">Trade Setup Manager</div><button id="newSetupBtn" class="btn-primary btn-small" style="margin-bottom:16px">+ New Trade Setup</button>${appData.tradeSetups.map(s => `<div style="background:#0F141C; border-radius:20px; padding:12px; margin-bottom:12px"><b>${s.name}</b><div class="row-flex"><span>Trades: ${s.tradesCount}</span><span>Winrate: ${s.winRate.toFixed(0)}%</span><span>Total wins: $${s.totalPnl.toFixed(2)}</span></div><button class="delete-setup btn-small btn-secondary" data-id="${s.id}">Hapus</button></div>`).join('')}</div>`;
+        document.getElementById('mainContent').innerHTML = html;
+        document.getElementById('newSetupBtn')?.addEventListener('click', openSetupModal);
+        document.querySelectorAll('.delete-setup').forEach(btn => { btn.addEventListener('click', () => { const id = parseInt(btn.dataset.id); appData.tradeSetups = appData.tradeSetups.filter(s => s.id !== id); saveToLocal(); renderTradeSetup(); }); });
     }
 
     function renderAccounts() {
-        const stats = computeStats();
         const themeList = Object.keys(themes);
-        const html = `
-            <div class="card"><div class="card-title">👤 Trader Profile</div><div><strong>${appData.accounts[0]?.name || "Pips Trader"}</strong> · ${appData.accounts[0]?.broker || "Prop"}</div><div class="row-flex"><span>Total P&L</span><span class="${stats.totalPnl>=0?'win-text':'loss-text'}">$${stats.totalPnl.toFixed(2)}</span></div><div class="row-flex"><span>Win Rate</span><span>${stats.winRate.toFixed(0)}%</span></div><div class="row-flex"><span>Profit Factor</span><span>${stats.profitFactor.toFixed(2)}</span></div></div>
-            <div class="card"><div class="card-title">🎨 Theme (Pips Style)</div>${themeList.map(key => { const t = themes[key]; const selected = currentTheme === key ? 'selected' : ''; return `<div class="theme-option ${selected}" data-theme="${key}"><div class="theme-color" style="background:${t.accent}"></div><div><strong>${t.name}</strong><br><span style="font-size:0.7rem">${key === 'pips-gold' ? 'Premium gold' : 'Modern'}</span></div></div>`; }).join('')}</div>
-            <div class="card"><div class="card-title">💾 Backup & Support</div><div class="flex-buttons"><button id="exportBackupBtn" class="btn-small btn-primary">📤 Export</button><label for="importBackupInput" class="btn-small btn-secondary" style="cursor:pointer;">📂 Import</label><input type="file" id="importBackupInput" accept=".json" style="display:none"/></div><button id="resetDataBtn" class="btn-outline btn-small" style="margin-top:12px;">Reset Journal</button></div>
-            <div class="card"><div class="card-title">⚙️ Pips Profit Features</div><div>✔ Copy Trading Signals<br>✔ Master Leaderboard<br>✔ ROI & Drawdown<br>✔ Cloud sync (coming)</div></div>
-        `;
+        const stats = computeStats();
+        const html = `<div class="card"><div class="card-title">Accounts · Condex.s</div><div class="stat-grid"><div><div class="stat-value">${stats.tradesCount}</div><div>TRADES</div></div><div><div class="stat-value">${stats.winRate.toFixed(0)}%</div><div>WIN RATE</div></div><div><div class="stat-value">${appData.accounts.length}</div><div>ACCOUNTS</div></div><div><div class="stat-value">XAUUSD</div><div>STRONGEST PAIR</div></div></div><div class="row-flex"><span>ALL-TIME HIGH RECORD</span><span>$${getPortfolioValue().toFixed(2)}</span></div><div class="row-flex"><span>Psychology STRENGTH</span><span>Confident</span></div><div class="row-flex"><span>Psychology WEAKNESS</span><span>No data yet</span></div></div>
+        <div class="card"><div class="card-title">Cloud Sync</div><div>Offline only for now</div><div>Offline only (not backed up). Sign in to back up your trades across devices.</div><button class="btn-outline btn-small" style="margin-top:8px">Sign In / Sign Up</button></div>
+        <div class="card"><div class="card-title">Theme & Support</div><div style="max-height:200px; overflow-y:auto">${themeList.map(key => { const t = themes[key]; const selected = appData.theme === key ? 'selected' : ''; return `<div class="theme-option ${selected}" data-theme="${key}"><div class="theme-color" style="background:${t.accent}"></div><div><strong>${t.name}</strong><br><span style="font-size:0.7rem">${key === 'electric-violet'?'Bold & creative':key==='neon-mint'?'Fresh & energetic':key==='ocean-blue'?'Calm & professional':key==='golden-hour'?'Luxurious & warm':key==='minimalist'?'Clean & simple':'Traditional register'}</span></div></div>`; }).join('')}</div><div class="flex-buttons" style="margin-top:12px"><button id="exportBackupBtn" class="btn-small btn-primary">Export backup</button><label for="importBackupInput" class="btn-small btn-secondary" style="cursor:pointer;">Import backup</label><input type="file" id="importBackupInput" accept=".json" style="display:none"/></div><button id="contributorsBtn" class="btn-outline btn-small" style="margin-top:12px; width:100%">🙏 Thanks community feedback</button></div>
+        <div class="card"><div class="card-title">Trading accounts</div>${appData.accounts.map(acc => `<div><strong>${acc.name}</strong><div class="row-flex"><span>STARTING: $${acc.starting.toFixed(2)}</span><span>CURRENT: $${acc.current.toFixed(2)}</span></div><div class="flex-buttons"><button class="deposit-btn btn-small btn-secondary" data-id="${acc.id}">Deposit</button><button class="withdraw-btn btn-small btn-secondary" data-id="${acc.id}">Withdraw</button></div></div>`).join('')}<button id="addAccountBtn" class="btn-primary btn-small" style="margin-top:12px">+ Add Account</button></div>`;
         document.getElementById('mainContent').innerHTML = html;
         document.querySelectorAll('.theme-option').forEach(opt => { opt.addEventListener('click', () => { applyTheme(opt.dataset.theme); renderAccounts(); }); });
-        document.getElementById('exportBackupBtn')?.addEventListener('click', () => { const dataStr = JSON.stringify(appData); const blob = new Blob([dataStr], {type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`traderx_backup.json`; a.click(); URL.revokeObjectURL(url); });
-        const fileInput = document.getElementById('importBackupInput');
-        fileInput?.addEventListener('change', (e) => { if(e.target.files[0]) { const reader = new FileReader(); reader.onload = (ev) => { try { const imported = JSON.parse(ev.target.result); if(imported.trades !== undefined) { appData = imported; saveToLocal(); alert("Restore success!"); render(); } else alert("Invalid file"); } catch(err) { alert("Error"); } }; reader.readAsText(e.target.files[0]); } });
-        document.getElementById('resetDataBtn')?.addEventListener('click', () => { if(confirm("Reset semua data trading?")) { appData.trades = []; appData.tradeSetups = []; appData.followedMasters = [1]; saveToLocal(); render(); } });
+        document.getElementById('exportBackupBtn')?.addEventListener('click', () => { const dataStr = JSON.stringify(appData); const blob = new Blob([dataStr], {type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="traderx_backup.json"; a.click(); });
+        const fileInput = document.getElementById('importBackupInput'); fileInput?.addEventListener('change', (e) => { if(e.target.files[0]){ const reader=new FileReader(); reader.onload=(ev)=>{ try{ const imp=JSON.parse(ev.target.result); if(imp.trades!==undefined){ appData=imp; saveToLocal(); render(); alert("Restore success!"); } else alert("Invalid"); } catch(err){ alert("Error"); } }; reader.readAsText(e.target.files[0]); } });
+        document.getElementById('contributorsBtn')?.addEventListener('click', () => document.getElementById('contributorsModal').classList.add('active'));
+        document.getElementById('closeContributors')?.addEventListener('click', () => document.getElementById('contributorsModal').classList.remove('active'));
+        document.querySelectorAll('.deposit-btn, .withdraw-btn').forEach(btn => { btn.addEventListener('click', (e) => { const action = btn.classList.contains('deposit-btn') ? 'deposit' : 'withdraw'; const accId = parseInt(btn.dataset.id); openFundModal(accId, action); }); });
+        document.getElementById('addAccountBtn')?.addEventListener('click', () => alert("Fitur tambah akun (simulasi)"));
     }
 
-    function openTradeModal() { 
-        const modal = document.getElementById('tradeModal'); 
-        modal.classList.add('active'); 
-        document.getElementById('saveTradeBtn').onclick = () => { 
-            const symbol = document.getElementById('tradeSymbol').value.trim() || "Unknown"; 
-            const date = document.getElementById('tradeDate').value; 
-            const pnl = parseFloat(document.getElementById('tradePnL').value); 
-            if(isNaN(pnl)) return; 
-            appData.trades.push({ id: Date.now(), symbol, date, pnl }); 
-            saveToLocal(); 
-            modal.classList.remove('active'); 
-            render(); 
-        }; 
-        document.getElementById('closeTradeModal').onclick = () => modal.classList.remove('active'); 
+    function openFundModal(accId, action) {
+        const modal = document.getElementById('fundModal');
+        const title = action === 'deposit' ? 'Deposit' : 'Withdraw';
+        document.getElementById('fundAction').innerText = title;
+        modal.classList.add('active');
+        const confirmBtn = document.getElementById('confirmFundBtn');
+        confirmBtn.onclick = () => {
+            const amount = parseFloat(document.getElementById('fundAmount').value);
+            if(isNaN(amount) || amount <=0) return;
+            const acc = appData.accounts.find(a => a.id === accId);
+            if(acc) {
+                if(action === 'deposit') acc.current += amount;
+                else if(acc.current - amount >= 0) acc.current -= amount;
+                else alert("Saldo tidak cukup");
+                saveToLocal();
+                renderAccounts();
+            }
+            modal.classList.remove('active');
+        };
+        document.getElementById('closeFundModal').onclick = () => modal.classList.remove('active');
+    }
+
+    function updateAccountAfterTrade() {
+        const totalPnl = appData.trades.reduce((s,t)=>s+t.pnl,0);
+        appData.accounts.forEach(acc => { acc.current = acc.starting + totalPnl; });
+        saveToLocal();
+    }
+
+    function openTradeModal() {
+        const modal = document.getElementById('tradeModal');
+        modal.classList.add('active');
+        document.querySelectorAll('.symbol-chip').forEach(chip => { chip.onclick = () => { document.getElementById('tradeSymbol').value = chip.dataset.sym; }; });
+        document.querySelectorAll('.dir-btn').forEach(btn => { btn.onclick = () => { document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }; });
+        document.getElementById('saveTradeBtn').onclick = () => {
+            const symbol = document.getElementById('tradeSymbol').value.trim();
+            const date = document.getElementById('tradeDate').value;
+            const direction = document.querySelector('.dir-btn.selected')?.innerText.split(' ')[0] || "BUY";
+            const lot = parseFloat(document.getElementById('lotSize').value);
+            let pnl = parseFloat(document.getElementById('tradePnl').value);
+            const comm = parseFloat(document.getElementById('commission').value) || 0;
+            pnl = pnl - comm;
+            if(isNaN(pnl)) return;
+            const session = "Asia";
+            const newTrade = { id: Date.now(), symbol, date, direction, lotSize: lot, pnl, session, commission: comm };
+            appData.trades.push(newTrade);
+            updateStrategyStats();
+            updateAccountAfterTrade();
+            saveToLocal();
+            modal.classList.remove('active');
+            render();
+        };
+        document.getElementById('closeTradeModal').onclick = () => modal.classList.remove('active');
+        document.querySelector('.dir-btn').classList.add('selected');
+    }
+
+    function openSetupModal() {
+        const modal = document.getElementById('setupModal');
+        modal.classList.add('active');
+        document.getElementById('saveSetupBtn').onclick = () => {
+            const name = document.getElementById('setupName').value.trim();
+            if(!name) return;
+            appData.tradeSetups.push({ id: Date.now(), name, desc: document.getElementById('setupDesc').value, tradesCount:0, totalPnl:0, winRate:0 });
+            saveToLocal();
+            modal.classList.remove('active');
+            render();
+        };
+        document.getElementById('closeSetupModal').onclick = () => modal.classList.remove('active');
     }
 
     function render() {
         if(activeTab === 'home') renderHome();
         else if(activeTab === 'journal') renderJournal();
-        else if(activeTab === 'signals') renderSignals();
         else if(activeTab === 'calendar') renderCalendar();
+        else if(activeTab === 'setup') renderTradeSetup();
         else if(activeTab === 'accounts') renderAccounts();
         document.querySelectorAll('.nav-item').forEach(btn => { if(btn.dataset.tab === activeTab) btn.classList.add('active'); else btn.classList.remove('active'); });
     }
 
-    function initNavigation() { document.querySelectorAll('.nav-item').forEach(btn => { btn.addEventListener('click', () => { activeTab = btn.dataset.tab; render(); }); }); window.openTradeModal = openTradeModal; }
+    function initNavigation() { document.querySelectorAll('.nav-item').forEach(btn => { btn.addEventListener('click', () => { activeTab = btn.dataset.tab; render(); }); }); }
+
+    // Demo trade awal (XAUUSD +$11)
+    function initDemoTrade() {
+        if(appData.trades.length === 0) {
+            appData.trades.push({ id: Date.now(), symbol: "XAUUSD", date: "2026-04-03", direction: "BUY", lotSize: 1.00, pnl: 11.00, session: "Asia", commission: 0 });
+            updateAccountAfterTrade();
+            updateStrategyStats();
+            saveToLocal();
+        }
+    }
+
     loadTheme();
     loadData();
+    initDemoTrade();
     initNavigation();
     render();
 </script>
