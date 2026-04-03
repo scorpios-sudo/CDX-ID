@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Trader X Academy Jurnal</title>
+    <!-- jsPDF untuk export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -19,7 +21,6 @@
             padding-bottom: 72px;
         }
 
-        /* scroll */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #1E2229; }
         ::-webkit-scrollbar-thumb { background: #2E3A45; border-radius: 8px; }
@@ -32,7 +33,6 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* header */
         .app-header {
             padding: 20px 16px 8px 16px;
             border-bottom: 1px solid var(--border-color, #1E2229);
@@ -55,7 +55,6 @@
             margin-top: 4px;
         }
 
-        /* bottom nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -91,10 +90,8 @@
         }
         .nav-icon { font-size: 1.4rem; }
 
-        /* main content */
         .main-content { padding: 16px; }
 
-        /* card */
         .card {
             background: var(--card-bg, #12161C);
             border-radius: 24px;
@@ -134,7 +131,6 @@
         }
         hr { border-color: #2A3140; margin: 14px 0; }
 
-        /* buttons */
         .btn-primary {
             background: var(--accent, #00D09C);
             border: none;
@@ -159,7 +155,6 @@
         }
         .btn-small { padding: 6px 12px; font-size: 0.7rem; width: auto; }
 
-        /* trade item & journal */
         .trade-item {
             background: #0F151E;
             border-radius: 20px;
@@ -170,7 +165,6 @@
         .trade-profit { border-left-color: #2ECC71; }
         .trade-loss { border-left-color: #E74C3C; }
 
-        /* chart sederhana */
         .bar-container {
             display: flex;
             gap: 12px;
@@ -186,17 +180,6 @@
             position: relative;
             overflow: hidden;
         }
-        .bar-fill {
-            background: var(--accent, #00D09C);
-            width: 100%;
-            position: absolute;
-            bottom: 0;
-            transition: height 0.2s;
-            border-radius: 12px 12px 0 0;
-        }
-        .bar-fill.loss { background: #E74C3C; }
-
-        /* calendar grid */
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -214,7 +197,6 @@
         .cal-day.loss { background: #E74C3C20; color: #E74C3C; border: 1px solid #E74C3C40; }
         .weekday { font-size: 0.7rem; color: #8A99AA; margin-bottom: 4px; }
 
-        /* modal */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -280,7 +262,6 @@
         .flex-buttons { display: flex; gap: 12px; margin-top: 16px; }
         .empty-state { text-align: center; padding: 30px 16px; color: #8A99AA; }
 
-        /* theme options */
         .theme-option {
             display: flex;
             align-items: center;
@@ -383,7 +364,6 @@
         theme: "neon-mint"
     };
 
-    // Theme definitions
     const themes = {
         'electric-violet': { name: 'Electric Violet', accent: '#B567FF', bg: '#0A0418', card: '#14102A', border: '#2E2350' },
         'neon-mint': { name: 'Neon Mint', accent: '#00D09C', bg: '#0A0C10', card: '#12161C', border: '#20242C' },
@@ -409,7 +389,6 @@
     }
 
     function loadTheme() { const saved = localStorage.getItem('traderx_theme'); if(saved && themes[saved]) applyTheme(saved); else applyTheme('neon-mint'); }
-
     function saveToLocal() { localStorage.setItem('TraderX_Jurnal_Data', JSON.stringify({ trades: appData.trades, tradeSetups: appData.tradeSetups, accounts: appData.accounts, theme: appData.theme })); }
     function loadData() {
         const stored = localStorage.getItem('TraderX_Jurnal_Data');
@@ -429,10 +408,8 @@
     }
 
     function updateStrategyStats() {
-        // update strategi berdasarkan trade (asumsi semua trade pakai strategi scalping untuk demo)
         appData.tradeSetups.forEach(s => {
             if(s.name === "scalping") {
-                const stratTrades = appData.trades.filter(t => t.strategy === "scalping" || true);
                 s.tradesCount = appData.trades.length;
                 s.totalPnl = appData.trades.reduce((sum,t)=> sum + t.pnl, 0);
                 const wins = appData.trades.filter(t => t.pnl > 0).length;
@@ -441,7 +418,6 @@
         });
     }
 
-    // Helper stats
     function computeStats() {
         const trades = appData.trades;
         const wins = trades.filter(t => t.pnl > 0);
@@ -460,7 +436,48 @@
     function getStartingValue() { return appData.accounts.reduce((sum, acc) => sum + acc.starting, 0); }
     function getAllTimePercent() { const start = getStartingValue(); const curr = getPortfolioValue(); return start === 0 ? 0 : ((curr - start) / start * 100); }
 
-    // Render utama
+    // ================= EXPORT PDF =================
+    async function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const stats = computeStats();
+        const portfolio = getPortfolioValue();
+        const percent = getAllTimePercent();
+
+        doc.setFont("helvetica");
+        doc.setFontSize(18);
+        doc.setTextColor(0, 208, 156);
+        doc.text("Trader X Academy Jurnal", 20, 20);
+        doc.setFontSize(10);
+        doc.setTextColor(200,200,200);
+        doc.text(`Export Date: ${new Date().toLocaleString()}`, 20, 30);
+
+        doc.setFontSize(14);
+        doc.setTextColor(255,255,255);
+        doc.text("Performance Summary", 20, 45);
+        doc.setFontSize(10);
+        doc.setTextColor(200,200,200);
+        doc.text(`Portfolio Value: $${portfolio.toFixed(2)} (${percent>=0?'+':''}${percent.toFixed(2)}%)`, 20, 55);
+        doc.text(`Total Trades: ${stats.tradesCount}`, 20, 62);
+        doc.text(`Win Rate: ${stats.winRate.toFixed(0)}%`, 20, 69);
+        doc.text(`Profit Factor: ${stats.profitFactor.toFixed(2)}`, 20, 76);
+        doc.text(`Best Trade: +$${stats.bestTrade.toFixed(2)}  |  Worst Trade: $${stats.worstTrade.toFixed(2)}`, 20, 83);
+        doc.text(`Avg Win: +$${stats.avgWin.toFixed(2)}  |  Avg Loss: -$${Math.abs(stats.avgLoss).toFixed(2)}`, 20, 90);
+
+        doc.text("Trade History:", 20, 105);
+        let y = 115;
+        if(appData.trades.length === 0) {
+            doc.text("No trades logged yet.", 20, y);
+        } else {
+            appData.trades.slice().reverse().forEach((t, idx) => {
+                if(y > 270) { doc.addPage(); y = 20; }
+                doc.text(`${t.date} | ${t.symbol} | ${t.direction} | P&L: $${t.pnl.toFixed(2)}`, 20, y);
+                y += 8;
+            });
+        }
+        doc.save(`TraderX_Jurnal_${new Date().toISOString().slice(0,19)}.pdf`);
+    }
+
     let activeTab = 'home';
 
     function renderHome() {
@@ -522,11 +539,12 @@
         const stats = computeStats();
         const html = `<div class="card"><div class="card-title">Accounts · Condex.s</div><div class="stat-grid"><div><div class="stat-value">${stats.tradesCount}</div><div>TRADES</div></div><div><div class="stat-value">${stats.winRate.toFixed(0)}%</div><div>WIN RATE</div></div><div><div class="stat-value">${appData.accounts.length}</div><div>ACCOUNTS</div></div><div><div class="stat-value">XAUUSD</div><div>STRONGEST PAIR</div></div></div><div class="row-flex"><span>ALL-TIME HIGH RECORD</span><span>$${getPortfolioValue().toFixed(2)}</span></div><div class="row-flex"><span>Psychology STRENGTH</span><span>Confident</span></div><div class="row-flex"><span>Psychology WEAKNESS</span><span>No data yet</span></div></div>
         <div class="card"><div class="card-title">Cloud Sync</div><div>Offline only for now</div><div>Offline only (not backed up). Sign in to back up your trades across devices.</div><button class="btn-outline btn-small" style="margin-top:8px">Sign In / Sign Up</button></div>
-        <div class="card"><div class="card-title">Theme & Support</div><div style="max-height:200px; overflow-y:auto">${themeList.map(key => { const t = themes[key]; const selected = appData.theme === key ? 'selected' : ''; return `<div class="theme-option ${selected}" data-theme="${key}"><div class="theme-color" style="background:${t.accent}"></div><div><strong>${t.name}</strong><br><span style="font-size:0.7rem">${key === 'electric-violet'?'Bold & creative':key==='neon-mint'?'Fresh & energetic':key==='ocean-blue'?'Calm & professional':key==='golden-hour'?'Luxurious & warm':key==='minimalist'?'Clean & simple':'Traditional register'}</span></div></div>`; }).join('')}</div><div class="flex-buttons" style="margin-top:12px"><button id="exportBackupBtn" class="btn-small btn-primary">Export backup</button><label for="importBackupInput" class="btn-small btn-secondary" style="cursor:pointer;">Import backup</label><input type="file" id="importBackupInput" accept=".json" style="display:none"/></div><button id="contributorsBtn" class="btn-outline btn-small" style="margin-top:12px; width:100%">🙏 Thanks community feedback</button></div>
+        <div class="card"><div class="card-title">Theme & Support</div><div style="max-height:200px; overflow-y:auto">${themeList.map(key => { const t = themes[key]; const selected = appData.theme === key ? 'selected' : ''; return `<div class="theme-option ${selected}" data-theme="${key}"><div class="theme-color" style="background:${t.accent}"></div><div><strong>${t.name}</strong><br><span style="font-size:0.7rem">${key === 'electric-violet'?'Bold & creative':key==='neon-mint'?'Fresh & energetic':key==='ocean-blue'?'Calm & professional':key==='golden-hour'?'Luxurious & warm':key==='minimalist'?'Clean & simple':'Traditional register'}</span></div></div>`; }).join('')}</div><div class="flex-buttons" style="margin-top:12px"><button id="exportBackupBtn" class="btn-small btn-primary">Export backup</button><label for="importBackupInput" class="btn-small btn-secondary" style="cursor:pointer;">Import backup</label><input type="file" id="importBackupInput" accept=".json" style="display:none"/><button id="exportPDFBtn" class="btn-small btn-primary" style="background:#E67E22;">📄 Export PDF</button></div><button id="contributorsBtn" class="btn-outline btn-small" style="margin-top:12px; width:100%">🙏 Thanks community feedback</button></div>
         <div class="card"><div class="card-title">Trading accounts</div>${appData.accounts.map(acc => `<div><strong>${acc.name}</strong><div class="row-flex"><span>STARTING: $${acc.starting.toFixed(2)}</span><span>CURRENT: $${acc.current.toFixed(2)}</span></div><div class="flex-buttons"><button class="deposit-btn btn-small btn-secondary" data-id="${acc.id}">Deposit</button><button class="withdraw-btn btn-small btn-secondary" data-id="${acc.id}">Withdraw</button></div></div>`).join('')}<button id="addAccountBtn" class="btn-primary btn-small" style="margin-top:12px">+ Add Account</button></div>`;
         document.getElementById('mainContent').innerHTML = html;
         document.querySelectorAll('.theme-option').forEach(opt => { opt.addEventListener('click', () => { applyTheme(opt.dataset.theme); renderAccounts(); }); });
         document.getElementById('exportBackupBtn')?.addEventListener('click', () => { const dataStr = JSON.stringify(appData); const blob = new Blob([dataStr], {type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="traderx_backup.json"; a.click(); });
+        document.getElementById('exportPDFBtn')?.addEventListener('click', exportToPDF);
         const fileInput = document.getElementById('importBackupInput'); fileInput?.addEventListener('change', (e) => { if(e.target.files[0]){ const reader=new FileReader(); reader.onload=(ev)=>{ try{ const imp=JSON.parse(ev.target.result); if(imp.trades!==undefined){ appData=imp; saveToLocal(); render(); alert("Restore success!"); } else alert("Invalid"); } catch(err){ alert("Error"); } }; reader.readAsText(e.target.files[0]); } });
         document.getElementById('contributorsBtn')?.addEventListener('click', () => document.getElementById('contributorsModal').classList.add('active'));
         document.getElementById('closeContributors')?.addEventListener('click', () => document.getElementById('contributorsModal').classList.remove('active'));
@@ -614,7 +632,6 @@
 
     function initNavigation() { document.querySelectorAll('.nav-item').forEach(btn => { btn.addEventListener('click', () => { activeTab = btn.dataset.tab; render(); }); }); }
 
-    // Demo trade awal (XAUUSD +$11)
     function initDemoTrade() {
         if(appData.trades.length === 0) {
             appData.trades.push({ id: Date.now(), symbol: "XAUUSD", date: "2026-04-03", direction: "BUY", lotSize: 1.00, pnl: 11.00, session: "Asia", commission: 0 });
