@@ -1,60 +1,143 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>Trader X Academy Jurnal</title>
-    <!-- jsPDF untuk export PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Trader X Academy | Premium Fintech Platform</title>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Font Awesome 6 (free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Inter + Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
         }
 
         body {
-            background-color: #0A0C10;
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: #0A0C10;
+            font-family: 'Inter', sans-serif;
             color: #EFF3F8;
-            padding-bottom: 72px;
+            overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #1E2229; }
-        ::-webkit-scrollbar-thumb { background: #2E3A45; border-radius: 8px; }
-
+        /* Main App Container */
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            background-color: var(--bg-primary, #0A0C10);
+            background: radial-gradient(circle at 20% 0%, #0F1219, #03050A);
             min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            position: relative;
+            padding-top: 70px;
+            padding-bottom: 80px; /* space for bottom nav */
         }
 
-        .app-header {
-            padding: 20px 16px 8px 16px;
-            border-bottom: 1px solid var(--border-color, #1E2229);
-            background: var(--bg-primary, #0A0C10);
-            position: sticky;
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #1A1F2A; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #2A6DFF; border-radius: 10px; }
+
+        /* Top Navbar (Glass) */
+        .top-navbar {
+            position: fixed;
             top: 0;
-            z-index: 10;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(12, 16, 24, 0.85);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(42, 109, 255, 0.4);
+            z-index: 150;
+            border-radius: 0 0 28px 28px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
         }
-        .app-header h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #FFFFFF 0%, var(--accent, #00D09C) 100%);
+        .top-navbar button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #EFF3F8;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .top-navbar button:hover { transform: scale(1.05); color: #2A6DFF; }
+        .logo {
+            font-weight: 800;
+            font-size: 18px;
+            background: linear-gradient(135deg, #FFFFFF, #2A6DFF, #00E6B2);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-        }
-        .app-header p {
-            font-size: 0.7rem;
-            color: var(--accent, #00D09C);
-            margin-top: 4px;
+            letter-spacing: 1px;
         }
 
+        /* Sidebar (Offcanvas) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            transition: 0.25s;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background: rgba(14, 18, 28, 0.96);
+            backdrop-filter: blur(24px);
+            border-right: 1px solid rgba(42, 109, 255, 0.6);
+            z-index: 201;
+            transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 32px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 8px 0 40px rgba(0,0,0,0.6);
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 12px 18px;
+            border-radius: 60px;
+            background: transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            color: #B8C7FF;
+        }
+        .sidebar-item i { width: 28px; font-size: 20px; }
+        .sidebar-item:hover, .sidebar-item.active-sidebar {
+            background: rgba(42, 109, 255, 0.25);
+            color: white;
+            transform: translateX(8px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .upgrade-sidebar {
+            background: linear-gradient(95deg, rgba(255,180,71,0.2), rgba(255,136,0,0.1));
+            border: 1px solid #FFB347;
+            margin-top: auto;
+            color: #FFD966;
+        }
+
+        /* BOTTOM NAVIGATION (NEW) */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -62,590 +145,616 @@
             right: 0;
             max-width: 500px;
             margin: 0 auto;
-            background: var(--nav-bg, #0F1219);
-            backdrop-filter: blur(12px);
+            background: rgba(12, 16, 24, 0.92);
+            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
-            padding: 8px 12px 20px;
-            border-top: 1px solid var(--border-color, #232730);
-            z-index: 20;
+            padding: 10px 16px 22px;
+            border-top: 1px solid rgba(42, 109, 255, 0.3);
+            z-index: 100;
         }
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            background: none;
-            border: none;
-            color: #8A99AA;
-            font-size: 0.65rem;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 6px 8px;
-            border-radius: 40px;
-        }
-        .nav-item.active {
-            color: var(--accent, #00D09C);
-            background: rgba(0, 208, 156, 0.1);
-        }
-        .nav-icon { font-size: 1.4rem; }
-
-        .main-content { padding: 16px; }
-
-        .card {
-            background: var(--card-bg, #12161C);
-            border-radius: 24px;
-            padding: 18px 16px;
-            margin-bottom: 18px;
-            border: 1px solid var(--border-color, #20242C);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .card-title {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            color: var(--accent, #00D09C);
-            margin-bottom: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: white;
-        }
-        .win-text { color: #2ECC71; }
-        .loss-text { color: #E74C3C; }
-        .row-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-        }
-        hr { border-color: #2A3140; margin: 14px 0; }
-
-        .btn-primary {
-            background: var(--accent, #00D09C);
-            border: none;
-            color: #0A0C10;
-            font-weight: 700;
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            width: 100%;
-            text-align: center;
-        }
-        .btn-secondary {
-            background: #1E293B;
-            color: var(--accent, #00D09C);
-            border: 1px solid var(--border-color);
-        }
-        .btn-outline {
+            gap: 5px;
             background: transparent;
-            border: 1px solid var(--accent, #00D09C);
-            color: var(--accent, #00D09C);
+            border: none;
+            color: #8E9AAF;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
         }
-        .btn-small { padding: 6px 12px; font-size: 0.7rem; width: auto; }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { 
+            color: #2A6DFF; 
+            text-shadow: 0 0 8px rgba(42,109,255,0.6); 
+            transform: translateY(-3px); 
+        }
 
-        .trade-item {
-            background: #0F151E;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid var(--accent, #00D09C);
+        /* Pages */
+        .page {
+            display: none;
+            padding: 20px 18px 30px;
+            animation: fadeIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-        .trade-profit { border-left-color: #2ECC71; }
-        .trade-loss { border-left-color: #E74C3C; }
+        .page.active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-        .bar-container {
-            display: flex;
-            gap: 12px;
-            justify-content: space-around;
-            margin-top: 16px;
+        /* Glass Cards */
+        .card {
+            background: rgba(20, 26, 36, 0.65);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(42, 109, 255, 0.25);
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .bar-item { text-align: center; flex: 1; }
-        .bar {
-            background: #1E2A32;
-            height: 70px;
-            border-radius: 12px;
-            margin-bottom: 6px;
-            position: relative;
-            overflow: hidden;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 6px;
-            text-align: center;
-            margin-top: 12px;
-        }
-        .cal-day {
-            background: #10141C;
-            padding: 8px 4px;
+        .card:hover { transform: translateY(-3px); box-shadow: 0 24px 40px -12px black; border-color: rgba(42,109,255,0.5); }
+
+        .glass-btn {
+            background: linear-gradient(95deg, #1F2A44, #121A2A);
+            border: none;
+            padding: 12px 20px;
             border-radius: 40px;
-            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .cal-day.profit { background: #2ECC6E20; color: #2ECC6E; border: 1px solid #2ECC6E40; }
-        .cal-day.loss { background: #E74C3C20; color: #E74C3C; border: 1px solid #E74C3C40; }
-        .weekday { font-size: 0.7rem; color: #8A99AA; margin-bottom: 4px; }
+        .glass-btn.primary {
+            background: linear-gradient(135deg, #2A6DFF, #0047CA);
+            box-shadow: 0 6px 14px rgba(42,109,255,0.4);
+        }
+        .glass-btn.primary:hover { transform: scale(0.97); filter: brightness(1.05); }
+        .badge {
+            background: rgba(42, 109, 255, 0.2);
+            border-radius: 60px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6D9EFF;
+        }
+        .profit-text { color: #00E6B2; font-weight: 800; }
+        .loss-text { color: #FF4D6D; font-weight: 800; }
+        hr { border-color: #2A3448; margin: 14px 0; }
 
-        .modal-overlay {
+        /* Horizontal Scroll */
+        .scroll-x {
+            display: flex;
+            overflow-x: auto;
+            gap: 16px;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 8px;
+        }
+        .video-card, .news-card-mini {
+            flex: 0 0 280px;
+            background: #11161F;
+            border-radius: 24px;
+            overflow: hidden;
+            scroll-snap-align: start;
+            border: 1px solid #2A3A55;
+        }
+        iframe { width: 100%; height: 160px; border: none; }
+        .signal-card, .module-card, .journal-item {
+            background: #0E121C;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 16px;
+            transition: 0.1s;
+        }
+        .premium-blur {
+            filter: blur(6px);
+            background: #161C28;
+            pointer-events: none;
+            position: relative;
+        }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+        /* Toast */
+        .toast-msg {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            max-width: 460px;
+            margin: 0 auto;
+            background: #1E293B;
+            backdrop-filter: blur(20px);
+            border-left: 5px solid #2A6DFF;
+            padding: 14px 20px;
+            border-radius: 60px;
+            font-weight: 500;
+            z-index: 300;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 100;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.2s;
+            z-index: 500;
         }
-        .modal-overlay.active { visibility: visible; opacity: 1; }
         .modal-content {
-            background: var(--card-bg, #12161C);
-            max-width: 340px;
-            width: 90%;
-            border-radius: 32px;
-            padding: 24px 20px;
-            border: 1px solid var(--accent, #00D09C);
-        }
-        .modal-content input, .modal-content select, .modal-content textarea {
-            width: 100%;
-            padding: 12px;
-            background: #1A2028;
-            border: 1px solid #2F3845;
-            border-radius: 28px;
-            color: white;
-            margin: 8px 0;
-        }
-        .symbol-quick {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 8px 0;
-        }
-        .symbol-chip {
-            background: #1E293B;
-            padding: 6px 12px;
+            background: #11161F;
             border-radius: 40px;
-            font-size: 0.8rem;
-            cursor: pointer;
+            width: 85%;
+            max-width: 380px;
+            padding: 28px;
+            border: 1px solid #2A6DFF;
         }
-        .direction-buttons {
-            display: flex;
-            gap: 16px;
-            margin: 8px 0;
+        input, select {
+            background: #0A0F18;
+            border: 1px solid #2A3A55;
+            padding: 14px 16px;
+            border-radius: 34px;
+            color: white;
+            width: 100%;
+            margin-top: 6px;
+            margin-bottom: 16px;
+            font-family: 'Inter', sans-serif;
         }
-        .dir-btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            background: #1E293B;
-            border-radius: 60px;
-            cursor: pointer;
-        }
-        .dir-btn.selected {
-            background: var(--accent, #00D09C);
-            color: #0A0C10;
-        }
-        .flex-buttons { display: flex; gap: 12px; margin-top: 16px; }
-        .empty-state { text-align: center; padding: 30px 16px; color: #8A99AA; }
+        input:focus { border-color: #2A6DFF; outline: none; }
 
-        .theme-option {
+        /* Auth */
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            background: #1A1F28;
-            border-radius: 60px;
-            margin-bottom: 8px;
-            cursor: pointer;
-            border: 1px solid transparent;
+            justify-content: center;
+            background: radial-gradient(circle at 30% 20%, #0B0F17, #020408);
+            padding: 24px;
         }
-        .theme-option.selected {
-            border-color: var(--accent, #00D09C);
-            background: rgba(0,208,156,0.1);
+        .auth-card {
+            background: rgba(16, 22, 32, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 48px;
+            padding: 36px 28px;
+            width: 100%;
+            border: 1px solid #2A6DFF;
         }
-        .theme-color { width: 28px; height: 28px; border-radius: 28px; }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="app-header">
-        <h1>Trader X Academy Jurnal</h1>
-        <p>Track, Analyze, Improve</p>
-    </div>
-    <div class="main-content" id="mainContent">Memuat...</div>
-    <div class="bottom-nav">
-        <button class="nav-item" data-tab="home"><span class="nav-icon">📊</span><span>Home</span></button>
-        <button class="nav-item" data-tab="journal"><span class="nav-icon">📒</span><span>Journal</span></button>
-        <button class="nav-item" data-tab="calendar"><span class="nav-icon">📅</span><span>Calendar</span></button>
-        <button class="nav-item" data-tab="setup"><span class="nav-icon">⚙️</span><span>Trade Setup</span></button>
-        <button class="nav-item" data-tab="accounts"><span class="nav-icon">👤</span><span>Accounts</span></button>
-    </div>
-</div>
 
-<!-- Modal New Trade -->
-<div id="tradeModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>➕ New Trade</h3>
-        <div class="symbol-quick">
-            <span class="symbol-chip" data-sym="XAUUSD">XAUUSD</span>
-            <span class="symbol-chip" data-sym="EURUSD">EURUSD</span>
-            <span class="symbol-chip" data-sym="GBPUSD">GBPUSD</span>
-            <span class="symbol-chip" data-sym="USDJPY">USDJPY</span>
-            <span class="symbol-chip" data-sym="GBPJPY">GBPJPY</span>
+<!-- AUTH (Login/Register) -->
+<div id="authContainer" class="auth-container">
+    <div class="auth-card" id="authCard">
+        <div style="text-align:center; margin-bottom: 32px;">
+            <i class="fas fa-chart-line fa-3x" style="color:#2A6DFF; filter: drop-shadow(0 0 8px #2A6DFF);"></i>
+            <h1 style="margin-top: 16px;">Trader X Academy</h1>
+            <p>Premium trading ecosystem</p>
         </div>
-        <input type="text" id="tradeSymbol" placeholder="Symbol" value="XAUUSD">
-        <input type="date" id="tradeDate" value="2026-04-03">
-        <div class="direction-buttons">
-            <div class="dir-btn" data-dir="BUY">BUY (LONG)</div>
-            <div class="dir-btn" data-dir="SELL">SELL (SHORT)</div>
+        <div id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email" value="demo@traderx.com">
+            <input type="password" id="loginPassword" placeholder="Password" value="123456">
+            <button class="glass-btn primary" id="doLoginBtn" style="width:100%; justify-content:center;">Login</button>
+            <p style="text-align:center; margin-top:20px;">Don't have an account? <span id="showRegisterBtn" style="color:#2A6DFF; cursor:pointer;">Register</span></p>
         </div>
-        <input type="number" id="lotSize" placeholder="Lot Size" step="0.01" value="1.00">
-        <input type="number" id="tradePnl" placeholder="P&L ($)" step="any" value="11.00">
-        <input type="number" id="commission" placeholder="Commission (optional)" step="any" value="0">
-        <div class="flex-buttons">
-            <button id="saveTradeBtn" class="btn-primary">Save Trade</button>
-            <button id="closeTradeModal" class="btn-secondary">Cancel</button>
+        <div id="registerForm" style="display:none;">
+            <input type="text" id="regName" placeholder="Full Name">
+            <input type="email" id="regEmail" placeholder="Email">
+            <input type="password" id="regPassword" placeholder="Password">
+            <button class="glass-btn primary" id="doRegisterBtn" style="width:100%; justify-content:center;">Create Account</button>
+            <p style="text-align:center; margin-top:20px;">Already have an account? <span id="showLoginBtn" style="color:#2A6DFF; cursor:pointer;">Login</span></p>
         </div>
     </div>
 </div>
 
-<!-- Modal Tambah Setup -->
-<div id="setupModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>📌 New Trade Setup</h3>
-        <input type="text" id="setupName" placeholder="Strategy name">
-        <textarea id="setupDesc" placeholder="Description" rows="2"></textarea>
-        <div class="flex-buttons"><button id="saveSetupBtn" class="btn-primary">Create</button><button id="closeSetupModal" class="btn-secondary">Cancel</button></div>
-    </div>
-</div>
-
-<!-- Modal Deposit/Withdraw -->
-<div id="fundModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 id="fundAction">Deposit</h3>
-        <input type="number" id="fundAmount" placeholder="Amount (USD)" step="any" value="0">
-        <div class="flex-buttons"><button id="confirmFundBtn" class="btn-primary">Confirm</button><button id="closeFundModal" class="btn-secondary">Cancel</button></div>
-    </div>
-</div>
-
-<!-- Modal Community Contributors -->
-<div id="contributorsModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>🙏 Community Contributors</h3>
-        <div style="margin: 16px 0; font-size:0.85rem">
-            <p><strong>REDDIT COMMUNITY</strong><br>CoffeeFX, Even_Competition2461, Mysterious_Drag_519, Few-Pepper858, Peppie79, Jerry Sonenarong</p>
-            <p><strong>VIA APP FEEDBACK</strong><br>Jamaal, Tahir Taskin</p>
-            <p><strong>PLAY STORE</strong><br>Serhii Smoliakov, Vhutali Ravhuhali, Ray Julian, Mugeesh K</p>
+<!-- MAIN APP (after login) -->
+<div id="mainApp" style="display: none;">
+    <div class="app-container">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <button id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+            <div class="logo">TRADER X ACADEMY</div>
+            <button id="notifBellBtn"><i class="fas fa-bell"></i></button>
         </div>
-        <button id="closeContributors" class="btn-primary btn-small">Close</button>
+
+        <!-- Sidebar -->
+        <div id="sidebarOverlay" class="sidebar-overlay"></div>
+        <div id="sidebar" class="sidebar">
+            <div style="margin-bottom: 10px;"><i class="fas fa-crown" style="color: #FFB347; font-size: 34px;"></i><h3 style="margin-top: 8px;">Menu</h3></div>
+            <div class="sidebar-item" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</div>
+            <div class="sidebar-item" data-page="signal"><i class="fas fa-chart-line"></i> Signal</div>
+            <div class="sidebar-item" data-page="education"><i class="fas fa-graduation-cap"></i> Education</div>
+            <div class="sidebar-item" data-page="journal"><i class="fas fa-book-open"></i> Journal Trading</div>
+            <div class="sidebar-item" data-page="calculator"><i class="fas fa-calculator"></i> Calculator</div>
+            <div class="sidebar-item" data-page="news"><i class="fas fa-newspaper"></i> News</div>
+            <div class="sidebar-item" data-page="profile"><i class="fas fa-user"></i> Profile</div>
+            <div class="sidebar-item upgrade-sidebar" id="sidebarMembership"><i class="fas fa-gem"></i> Membership</div>
+        </div>
+
+        <!-- PAGES -->
+        <div id="dashboardPage" class="page active-page"></div>
+        <div id="signalPage" class="page"></div>
+        <div id="educationPage" class="page"></div>
+        <div id="journalPage" class="page"></div>
+        <div id="calculatorPage" class="page"></div>
+        <div id="newsPage" class="page"></div>
+        <div id="profilePage" class="page"></div>
+        <div id="membershipPage" class="page"></div>
+
+        <!-- BOTTOM NAVIGATION BAR (NEW) -->
+        <div class="bottom-nav">
+            <button class="nav-item" data-nav="dashboard"><i class="fas fa-home"></i><span>Home</span></button>
+            <button class="nav-item" data-nav="signal"><i class="fas fa-chart-line"></i><span>Signals</span></button>
+            <button class="nav-item" data-nav="journal"><i class="fas fa-book-open"></i><span>Journal</span></button>
+            <button class="nav-item" data-nav="news"><i class="fas fa-newspaper"></i><span>News</span></button>
+            <button class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span>Profile</span></button>
+        </div>
     </div>
 </div>
 
 <script>
-    // Data
-    let appData = {
-        trades: [],
-        tradeSetups: [{ id: 1, name: "scalping", desc: "Scalping strategy", tradesCount: 0, totalPnl: 0, winRate: 0 }],
-        accounts: [{ id: 1, name: "Condex.s", starting: 20, current: 31 }],
-        theme: "neon-mint"
-    };
+    // ---------- DATA & STATE ----------
+    let currentUser = null;
+    let users = [];
+    let signals = [];
+    let educationModules = [];
+    let newsArticles = [];
+    let activityFeed = [];
+    let chartInstance = null;
 
-    const themes = {
-        'electric-violet': { name: 'Electric Violet', accent: '#B567FF', bg: '#0A0418', card: '#14102A', border: '#2E2350' },
-        'neon-mint': { name: 'Neon Mint', accent: '#00D09C', bg: '#0A0C10', card: '#12161C', border: '#20242C' },
-        'ocean-blue': { name: 'Ocean Blue', accent: '#2D9CDB', bg: '#0A1927', card: '#0E2433', border: '#1D4E6E' },
-        'golden-hour': { name: 'Golden Hour', accent: '#F2C94C', bg: '#1E1508', card: '#2A2010', border: '#5E4A1A' },
-        'minimalist': { name: 'Minimalist', accent: '#9CA3AF', bg: '#111111', card: '#1A1A1A', border: '#2C2C2C' },
-        'classic-ledger': { name: 'Classic Ledger', accent: '#D4AF37', bg: '#F5F2E6', card: '#FFFDF5', border: '#D1C7B8', textDark: true }
-    };
-
-    function applyTheme(themeId) {
-        const t = themes[themeId];
-        if (!t) return;
-        document.documentElement.style.setProperty('--accent', t.accent);
-        document.documentElement.style.setProperty('--bg-primary', t.bg);
-        document.documentElement.style.setProperty('--card-bg', t.card);
-        document.documentElement.style.setProperty('--border-color', t.border);
-        document.documentElement.style.setProperty('--nav-bg', t.card);
-        if (t.textDark) document.body.style.color = '#111';
-        else document.body.style.color = '#EFF3F8';
-        localStorage.setItem('traderx_theme', themeId);
-        appData.theme = themeId;
-        saveToLocal();
+    // Initial dummy data
+    function initData() {
+        signals = [
+            { id: 1, pair: "BTC/USD", entry: 68420, tp: 69500, sl: 67800, confidence: 87, status: "Running", timeLeft: "2h", premium: false },
+            { id: 2, pair: "EUR/USD", entry: 1.0925, tp: 1.0980, sl: 1.0880, confidence: 92, status: "TP Hit", timeLeft: "Closed", premium: false },
+            { id: 3, pair: "XAU/USD", entry: 2365, tp: 2385, sl: 2345, confidence: 78, status: "Running", timeLeft: "5h", premium: true },
+            { id: 4, pair: "ETH/USD", entry: 3250, tp: 3400, sl: 3170, confidence: 84, status: "Running", timeLeft: "3h", premium: true },
+            { id: 5, pair: "SOL/USD", entry: 172.4, tp: 185.0, sl: 166.2, confidence: 91, status: "SL Hit", timeLeft: "Closed", premium: true }
+        ];
+        educationModules = [
+            { id: 1, title: "Smart Money Concepts", desc: "Institutional order flow basics", premium: false, videoId: "dQw4w9WgXcQ" },
+            { id: 2, title: "Risk Management 101", desc: "Position sizing & drawdown", premium: false, videoId: "JfVOs4VSpmA" },
+            { id: 3, title: "Advanced Entry Precision", desc: "Supply/demand + FVG", premium: true, videoId: "3nXLaO--DqM" },
+            { id: 4, title: "Market Profile Mastery", desc: "Volume profile analysis", premium: true, videoId: "LDU_Txk06tM" }
+        ];
+        newsArticles = [
+            { id: 1, title: "Fed signals rate cuts in H2 2025", image: "https://picsum.photos/id/26/100/100", desc: "Dovish stance boosts crypto", date: "2h ago" },
+            { id: 2, title: "Gold breaks resistance, targets $2400", image: "https://picsum.photos/id/29/100/100", desc: "Safe haven demand surges", date: "5h ago" },
+            { id: 3, title: "Bitcoin dominance reaches 54%", image: "https://picsum.photos/id/20/100/100", desc: "Altcoin season awaits", date: "1d ago" }
+        ];
+        for(let i=0;i<5;i++) activityFeed.push(`📊 Market update: ${Math.random() > 0.5 ? 'Volatility increasing' : 'Liquidity sweep'}`);
     }
 
-    function loadTheme() { const saved = localStorage.getItem('traderx_theme'); if(saved && themes[saved]) applyTheme(saved); else applyTheme('neon-mint'); }
-    function saveToLocal() { localStorage.setItem('TraderX_Jurnal_Data', JSON.stringify({ trades: appData.trades, tradeSetups: appData.tradeSetups, accounts: appData.accounts, theme: appData.theme })); }
-    function loadData() {
-        const stored = localStorage.getItem('TraderX_Jurnal_Data');
-        if(stored) {
-            try {
-                const p = JSON.parse(stored);
-                appData.trades = p.trades || [];
-                appData.tradeSetups = p.tradeSetups || [];
-                appData.accounts = p.accounts || [];
-                if(p.theme) appData.theme = p.theme;
-            } catch(e) {}
+    // Load users from localStorage
+    function loadUsers() {
+        const stored = localStorage.getItem("traderx_users");
+        if(stored) users = JSON.parse(stored);
+        else {
+            users = [{ id: 1, name: "Alex Trader", email: "demo@traderx.com", password: "123456", premium: false, journalEntries: [] }];
+            saveUsers();
         }
-        if(appData.accounts.length === 0) appData.accounts = [{ id: 1, name: "Condex.s", starting: 20, current: 20 }];
-        if(appData.tradeSetups.length === 0) appData.tradeSetups = [{ id: 1, name: "scalping", desc: "Scalping strategy", tradesCount: 0, totalPnl: 0, winRate: 0 }];
-        updateStrategyStats();
-        saveToLocal();
+    }
+    function saveUsers() { localStorage.setItem("traderx_users", JSON.stringify(users)); }
+    function saveCurrentUser() { localStorage.setItem("traderx_currentUser", JSON.stringify(currentUser)); }
+    function loadCurrentSession() {
+        const sess = localStorage.getItem("traderx_currentUser");
+        if(sess) {
+            currentUser = JSON.parse(sess);
+            const found = users.find(u => u.id === currentUser.id);
+            if(found) currentUser = found;
+            else currentUser = null;
+        }
     }
 
-    function updateStrategyStats() {
-        appData.tradeSetups.forEach(s => {
-            if(s.name === "scalping") {
-                s.tradesCount = appData.trades.length;
-                s.totalPnl = appData.trades.reduce((sum,t)=> sum + t.pnl, 0);
-                const wins = appData.trades.filter(t => t.pnl > 0).length;
-                s.winRate = s.tradesCount ? (wins / s.tradesCount * 100) : 0;
-            }
+    function updateUserInArray(updatedUser) {
+        const idx = users.findIndex(u => u.id === updatedUser.id);
+        if(idx !== -1) users[idx] = updatedUser;
+        saveUsers();
+        if(currentUser && currentUser.id === updatedUser.id) currentUser = updatedUser;
+        saveCurrentUser();
+    }
+
+    // Journal functions
+    function addJournalEntry(pair, entry, exit, lots) {
+        if(!currentUser) return;
+        const profit = (exit - entry) * lots * 100; 
+        const newEntry = { id: Date.now(), pair, entry, exit, lots, profit, date: new Date().toISOString() };
+        if(!currentUser.journalEntries) currentUser.journalEntries = [];
+        currentUser.journalEntries.unshift(newEntry);
+        updateUserInArray(currentUser);
+        renderJournalPage();
+        renderDashboardPage();
+        showToast(`Trade added: ${profit>=0 ? '+' : ''}$${profit.toFixed(2)}`);
+    }
+    function deleteJournalEntry(id) {
+        if(!currentUser) return;
+        currentUser.journalEntries = currentUser.journalEntries.filter(e => e.id !== id);
+        updateUserInArray(currentUser);
+        renderJournalPage();
+        renderDashboardPage();
+    }
+
+    function getTotalPnL() {
+        if(!currentUser || !currentUser.journalEntries) return 0;
+        return currentUser.journalEntries.reduce((sum, e) => sum + e.profit, 0);
+    }
+    function getTodayPnL() {
+        if(!currentUser || !currentUser.journalEntries) return 0;
+        const today = new Date().toDateString();
+        return currentUser.journalEntries.filter(e => new Date(e.date).toDateString() === today).reduce((s, e) => s + e.profit, 0);
+    }
+    function getWeeklyReturn() {
+        const total = getTotalPnL();
+        const balance = 10000 + total;
+        return ((total / 10000) * 100).toFixed(1);
+    }
+
+    function getEquityCurve() {
+        let cumulative = 10000;
+        let points = [{label: 'Start', balance: cumulative}];
+        if(currentUser && currentUser.journalEntries) {
+            const sorted = [...currentUser.journalEntries].reverse();
+            sorted.forEach(e => {
+                cumulative += e.profit;
+                points.push({label: e.pair, balance: cumulative});
+            });
+        }
+        return points;
+    }
+
+    function renderDashboardChart() {
+        const canvas = document.getElementById("equityCanvas");
+        if(!canvas) return;
+        const ctx = canvas.getContext("2d");
+        const data = getEquityCurve();
+        const labels = data.map(p => p.label.length>6 ? p.label.slice(0,5) : p.label);
+        const balances = data.map(p => p.balance);
+        if(chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { labels, datasets: [{ label: 'Equity ($)', data: balances, borderColor: '#00E6B2', backgroundColor: 'rgba(0,230,178,0.05)', borderWidth: 3, fill: true, tension: 0.3 }] },
+            options: { responsive: true, maintainAspectRatio: true }
         });
     }
 
-    function computeStats() {
-        const trades = appData.trades;
-        const wins = trades.filter(t => t.pnl > 0);
-        const losses = trades.filter(t => t.pnl < 0);
-        const totalPnl = trades.reduce((s,t)=> s + t.pnl, 0);
-        const winRate = wins.length + losses.length === 0 ? 0 : (wins.length / (wins.length + losses.length) * 100);
-        const avgWin = wins.length ? wins.reduce((s,w)=> s+w.pnl,0)/wins.length : 0;
-        const avgLoss = losses.length ? losses.reduce((s,l)=> s+l.pnl,0)/losses.length : 0;
-        const bestTrade = trades.length ? Math.max(...trades.map(t=>t.pnl)) : 0;
-        const worstTrade = trades.length ? Math.min(...trades.map(t=>t.pnl)) : 0;
-        const profitFactor = (wins.reduce((s,w)=> s+w.pnl,0) / Math.abs(losses.reduce((s,l)=> s+l.pnl,0))) || (wins.length?999:0);
-        return { totalPnl, winRate, tradesCount: trades.length, winsCount: wins.length, lossesCount: losses.length, breakeven: trades.filter(t=>t.pnl===0).length, avgWin, avgLoss, bestTrade, worstTrade, profitFactor };
+    let activityInterval;
+    function startActivitySimulation() {
+        if(activityInterval) clearInterval(activityInterval);
+        activityInterval = setInterval(() => {
+            const msgs = ["🔥 23 traders joined today", "⚡ Last signal profit +$320", "📈 BTC volatility spike", "💎 Premium signal just released", "🎯 Winrate improved to 68%"];
+            const randomMsg = msgs[Math.floor(Math.random() * msgs.length)];
+            activityFeed.unshift(randomMsg);
+            if(activityFeed.length > 6) activityFeed.pop();
+            renderDashboardPage();
+        }, 8000);
     }
 
-    function getPortfolioValue() { return appData.accounts.reduce((sum, acc) => sum + acc.current, 0); }
-    function getStartingValue() { return appData.accounts.reduce((sum, acc) => sum + acc.starting, 0); }
-    function getAllTimePercent() { const start = getStartingValue(); const curr = getPortfolioValue(); return start === 0 ? 0 : ((curr - start) / start * 100); }
-
-    // ================= EXPORT PDF =================
-    async function exportToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        const stats = computeStats();
-        const portfolio = getPortfolioValue();
-        const percent = getAllTimePercent();
-
-        doc.setFont("helvetica");
-        doc.setFontSize(18);
-        doc.setTextColor(0, 208, 156);
-        doc.text("Trader X Academy Jurnal", 20, 20);
-        doc.setFontSize(10);
-        doc.setTextColor(200,200,200);
-        doc.text(`Export Date: ${new Date().toLocaleString()}`, 20, 30);
-
-        doc.setFontSize(14);
-        doc.setTextColor(255,255,255);
-        doc.text("Performance Summary", 20, 45);
-        doc.setFontSize(10);
-        doc.setTextColor(200,200,200);
-        doc.text(`Portfolio Value: $${portfolio.toFixed(2)} (${percent>=0?'+':''}${percent.toFixed(2)}%)`, 20, 55);
-        doc.text(`Total Trades: ${stats.tradesCount}`, 20, 62);
-        doc.text(`Win Rate: ${stats.winRate.toFixed(0)}%`, 20, 69);
-        doc.text(`Profit Factor: ${stats.profitFactor.toFixed(2)}`, 20, 76);
-        doc.text(`Best Trade: +$${stats.bestTrade.toFixed(2)}  |  Worst Trade: $${stats.worstTrade.toFixed(2)}`, 20, 83);
-        doc.text(`Avg Win: +$${stats.avgWin.toFixed(2)}  |  Avg Loss: -$${Math.abs(stats.avgLoss).toFixed(2)}`, 20, 90);
-
-        doc.text("Trade History:", 20, 105);
-        let y = 115;
-        if(appData.trades.length === 0) {
-            doc.text("No trades logged yet.", 20, y);
-        } else {
-            appData.trades.slice().reverse().forEach((t, idx) => {
-                if(y > 270) { doc.addPage(); y = 20; }
-                doc.text(`${t.date} | ${t.symbol} | ${t.direction} | P&L: $${t.pnl.toFixed(2)}`, 20, y);
-                y += 8;
-            });
-        }
-        doc.save(`TraderX_Jurnal_${new Date().toISOString().slice(0,19)}.pdf`);
-    }
-
-    let activeTab = 'home';
-
-    function renderHome() {
-        const stats = computeStats();
-        const portfolio = getPortfolioValue();
-        const percent = getAllTimePercent();
-        const last5 = getLast5DaysPnL();
-        const sessionData = getWinsLossesPerSession();
-        const html = `
-            <div class="card"><div class="card-title">PORTFOLIO VALUE</div><div class="stat-value win-text">$${portfolio.toFixed(2)}</div><div>≈ ${percent>=0?'+':''}${percent.toFixed(2)}% all time</div></div>
-            <div class="stat-grid"><div class="card"><div class="stat-value">${stats.winRate.toFixed(0)}%</div><div>WIN RATE</div></div><div class="card"><div class="stat-value">${stats.tradesCount}</div><div>TRADES</div></div><div class="card"><div class="stat-value">${stats.profitFactor.toFixed(1)}</div><div>P. FACTOR</div></div><div class="card"><div class="stat-value">-</div><div>STREAK</div></div></div>
-            <div class="card"><div class="card-title">Performance</div><div class="row-flex"><span>Wins: ${stats.winsCount}</span><span>Losses: ${stats.lossesCount}</span><span>Breakeven: ${stats.breakeven}</span></div><hr><div class="row-flex"><span>BEST TRADE</span><span class="win-text">+$${stats.bestTrade.toFixed(2)}</span></div><div class="row-flex"><span>WORST TRADE</span><span class="loss-text">$${stats.worstTrade.toFixed(2)}</span></div><div class="row-flex"><span>AVG WIN</span><span class="win-text">+$${stats.avgWin.toFixed(2)}</span></div><div class="row-flex"><span>AVG LOSS</span><span class="loss-text">-$${Math.abs(stats.avgLoss).toFixed(2)}</span></div></div>
-            <div class="card"><div class="card-title">Trade Setup Analytics <span style="font-size:0.7rem">View all ></span></div>${appData.tradeSetups.map(s => `<div><strong>${s.name}</strong> - ${s.tradesCount} trades | ${s.winRate.toFixed(0)}% WR</div>`).join('')}<button id="openSetupFromHome" class="btn-secondary btn-small" style="margin-top:12px; width:100%">+ Create Your First Strategy</button></div>
-            <div class="card"><div class="card-title">Performance Breakdown (P&L - LAST 5 DAYS)</div><div class="bar-container">${last5.map(day => `<div class="bar-item"><div class="bar" style="height:50px; position:relative"><div style="height: ${Math.min(50, Math.max(0, (day.pnl/100)*50))}px; background:${day.pnl>=0 ? 'var(--accent)' : '#E74C3C'}; width:100%; position:absolute; bottom:0; border-radius:8px;"></div></div><div style="font-size:10px">${day.date}</div><div>$${day.pnl}</div></div>`).join('')}</div></div>
-            <div class="card"><div class="card-title">WINS VS LOSSES PER SESSION</div><div class="bar-container">${sessionData.map(s => `<div class="bar-item"><div class="bar" style="height:60px; position:relative"><div style="height: ${(s.wins/2)*50}px; background:var(--accent); width:45%; position:absolute; bottom:0; left:0;"></div><div style="height: ${(s.losses/2)*50}px; background:#E74C3C; width:45%; position:absolute; bottom:0; right:0;"></div></div><div style="font-size:9px">${s.session}</div><div>W:${s.wins} L:${s.losses}</div></div>`).join('')}</div></div>
-            <button class="btn-primary" id="fabNewTradeHome">+ New Trade</button>
+    // ---------- RENDER PAGES (same as before, but we keep all) ----------
+    function renderDashboardPage() {
+        const container = document.getElementById("dashboardPage");
+        const totalPnL = getTotalPnL();
+        const todayPnL = getTodayPnL();
+        const weeklyReturn = getWeeklyReturn();
+        const balance = 10000 + totalPnL;
+        const premiumBadge = currentUser?.premium ? '<span class="badge" style="background:#FFB34720;color:#FFB347;"><i class="fas fa-crown"></i> PREMIUM</span>' : '<span class="badge">FREE</span>';
+        const activityHtml = activityFeed.slice(0,4).map(a => `<div class="flex-between" style="margin-bottom:8px;"><span>🔔 ${a}</span></div>`).join('');
+        container.innerHTML = `
+            <div class="card"><div class="flex-between"><div><h2>Welcome back, ${currentUser?.name}</h2>${premiumBadge}</div><i class="fas fa-chart-line" style="font-size:32px;color:#2A6DFF;"></i></div></div>
+            <div class="card"><div class="flex-between"><span>💰 Total Balance</span><span class="profit-text">$${balance.toFixed(2)}</span></div>
+            <div class="flex-between"><span>📈 Today P&L</span><span class="${todayPnL>=0?'profit-text':'loss-text'}">${todayPnL>=0?'+':''}$${todayPnL.toFixed(2)}</span></div>
+            <div class="flex-between"><span>📊 Weekly Return</span><span class="${weeklyReturn>=0?'profit-text':'loss-text'}">${weeklyReturn}%</span></div><hr>
+            <canvas id="equityCanvas" height="150"></canvas></div>
+            <div class="card"><h3>🔥 FOMO Updates</h3><div>🚀 23 traders joined today</div><div>⚡ Last signal profit +$320</div><div>💎 Premium signals winrate 78%</div></div>
+            <div class="card"><h3>📺 Mentor's Picks</h3><div class="scroll-x" id="mentorVideos"></div></div>
+            <div class="card"><h3>📰 News Preview</h3><div id="newsPreviewDash"></div></div>
+            <div class="card"><h3>👑 Mentor Section</h3><div><i class="fas fa-user-tie"></i> Trader X | 7+ Years Experience</div><div>🎯 Proprietary strategy with 70% winrate</div></div>
+            <div class="card"><h3>⚡ Live Activity</h3>${activityHtml}</div>
+            <div class="grid-2"><button class="glass-btn primary" id="quickJournalBtn"><i class="fas fa-plus-circle"></i> Add Trade</button>
+            <button class="glass-btn" id="quickSignalBtn"><i class="fas fa-chart-line"></i> Signals</button></div>
         `;
-        document.getElementById('mainContent').innerHTML = html;
-        document.getElementById('fabNewTradeHome')?.addEventListener('click', openTradeModal);
-        document.getElementById('openSetupFromHome')?.addEventListener('click', openSetupModal);
+        const mentorVideos = [{ id: "dQw4w9WgXcQ", title: "Smart Money" }, { id: "JfVOs4VSpmA", title: "Risk Management" }];
+        const vidContainer = document.getElementById("mentorVideos");
+        if(vidContainer) vidContainer.innerHTML = mentorVideos.map(v => `<div class="video-card"><iframe src="https://www.youtube.com/embed/${v.id}?autoplay=0&mute=1" allowfullscreen></iframe><div style="padding:8px">${v.title}</div></div>`).join('');
+        const newsPreviewDiv = document.getElementById("newsPreviewDash");
+        if(newsPreviewDiv) newsPreviewDiv.innerHTML = newsArticles.slice(0,2).map(n => `<div class="flex-between"><img src="${n.image}" width="40" height="40" style="border-radius:12px"><div><b>${n.title}</b><br><small>${n.date}</small></div></div>`).join('');
+        renderDashboardChart();
+        document.getElementById("quickJournalBtn")?.addEventListener("click", ()=> switchPage("journal"));
+        document.getElementById("quickSignalBtn")?.addEventListener("click", ()=> switchPage("signal"));
     }
 
-    function getLast5DaysPnL() { const trades = appData.trades; const map = {}; trades.forEach(t=>{ map[t.date] = (map[t.date]||0)+t.pnl; }); const days = []; for(let i=4;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=d.toISOString().slice(0,10); days.push({date:ds.slice(5), pnl: map[ds]||0}); } return days; }
-    function getWinsLossesPerSession() { const sessions = ["Asia", "London", "NY"]; const result = sessions.map(s=> ({session:s, wins:0, losses:0})); appData.trades.forEach(t=>{ const session = t.session || "Asia"; const idx = sessions.indexOf(session); if(idx!==-1) { if(t.pnl>0) result[idx].wins++; else if(t.pnl<0) result[idx].losses++; } }); return result; }
-
-    function renderJournal() {
-        const trades = appData.trades;
-        const html = `<div class="card"><div class="card-title">Journal · ${trades.length} trades logged</div><div style="display:flex; gap:16px; margin-bottom:16px"><span style="border-bottom:2px solid var(--accent)">📝 Trades</span><span>📸 Screenshots</span></div>${trades.length === 0 ? `<div class="empty-state">📭 No trades logged yet<br><button id="firstTradeBtn" class="btn-primary btn-small" style="margin-top:12px">Log your first trade</button></div>` : trades.map(t => `<div class="trade-item trade-${t.pnl>=0?'profit':'loss'}"><div><strong>${t.symbol}</strong> | ${t.direction} | ${t.date} • ${t.session || 'Asia'}</div><div>P&L: <span class="${t.pnl>=0?'win-text':'loss-text'}">$${t.pnl.toFixed(2)}</span></div><button class="delete-trade btn-small btn-secondary" data-id="${t.id}" style="margin-top:6px;">Hapus</button></div>`).join('')}</div>`;
-        document.getElementById('mainContent').innerHTML = html;
-        if(trades.length===0) document.getElementById('firstTradeBtn')?.addEventListener('click', openTradeModal);
-        document.querySelectorAll('.delete-trade').forEach(btn => { btn.addEventListener('click', () => { const id = parseInt(btn.dataset.id); appData.trades = appData.trades.filter(t => t.id !== id); updateAccountAfterTrade(); saveToLocal(); render(); }); });
-        if(trades.length>0) { const addBtn = document.createElement('button'); addBtn.className = 'btn-primary'; addBtn.innerText = '+ New Trade'; addBtn.style.marginTop='12px'; addBtn.addEventListener('click', openTradeModal); document.getElementById('mainContent').appendChild(addBtn); }
-    }
-
-    function renderCalendar() {
-        const stats = computeStats();
-        const year=2026, month=3;
-        const firstDay = new Date(year,month,1).getDay();
-        const daysInMonth = new Date(year,month+1,0).getDate();
-        let calendarDays = [];
-        for(let i=0;i<firstDay;i++) calendarDays.push(null);
-        for(let d=1;d<=daysInMonth;d++) calendarDays.push(d);
-        const tradesByDate = {};
-        appData.trades.forEach(t => { if(t.date.startsWith('2026-04')) tradesByDate[t.date.slice(8)] = (tradesByDate[t.date.slice(8)] || 0) + t.pnl; });
-        const totalMonthly = appData.trades.filter(t=>t.date.startsWith('2026-04')).reduce((s,t)=>s+t.pnl,0);
-        const html = `<div class="card"><div class="card-title">April 2026</div><div class="stat-value ${totalMonthly>=0?'win-text':'loss-text'}">MONTHLY P&L: ${totalMonthly>=0?'+':''}$${totalMonthly.toFixed(2)}</div><div class="row-flex"><span>WIN RATE ${stats.winRate.toFixed(0)}%</span><span>STREAK -</span><span>TRADING DAYS ${Object.keys(tradesByDate).length}</span></div><div class="calendar-grid">${['SUN','MON','TUE','WED','THU','FRI','SAT'].map(d=>`<div class="weekday">${d.slice(0,3)}</div>`).join('')}${calendarDays.map(day => { if(day===null) return `<div class="cal-day"></div>`; const pnlDay = tradesByDate[day.toString().padStart(2,'0')]||0; let cls = ''; if(pnlDay>0) cls='profit'; else if(pnlDay<0) cls='loss'; return `<div class="cal-day ${cls}">${day}</div>`; }).join('')}</div></div><div class="card"><div class="card-title">Weekly Breakdown</div><div>Only trading day: +$${totalMonthly.toFixed(2)} (Apr 3)</div></div>`;
-        document.getElementById('mainContent').innerHTML = html;
-    }
-
-    function renderTradeSetup() {
-        const html = `<div class="card"><div class="card-title">Trade Setup Manager</div><button id="newSetupBtn" class="btn-primary btn-small" style="margin-bottom:16px">+ New Trade Setup</button>${appData.tradeSetups.map(s => `<div style="background:#0F141C; border-radius:20px; padding:12px; margin-bottom:12px"><b>${s.name}</b><div class="row-flex"><span>Trades: ${s.tradesCount}</span><span>Winrate: ${s.winRate.toFixed(0)}%</span><span>Total wins: $${s.totalPnl.toFixed(2)}</span></div><button class="delete-setup btn-small btn-secondary" data-id="${s.id}">Hapus</button></div>`).join('')}</div>`;
-        document.getElementById('mainContent').innerHTML = html;
-        document.getElementById('newSetupBtn')?.addEventListener('click', openSetupModal);
-        document.querySelectorAll('.delete-setup').forEach(btn => { btn.addEventListener('click', () => { const id = parseInt(btn.dataset.id); appData.tradeSetups = appData.tradeSetups.filter(s => s.id !== id); saveToLocal(); renderTradeSetup(); }); });
-    }
-
-    function renderAccounts() {
-        const themeList = Object.keys(themes);
-        const stats = computeStats();
-        const html = `<div class="card"><div class="card-title">Accounts · Condex.s</div><div class="stat-grid"><div><div class="stat-value">${stats.tradesCount}</div><div>TRADES</div></div><div><div class="stat-value">${stats.winRate.toFixed(0)}%</div><div>WIN RATE</div></div><div><div class="stat-value">${appData.accounts.length}</div><div>ACCOUNTS</div></div><div><div class="stat-value">XAUUSD</div><div>STRONGEST PAIR</div></div></div><div class="row-flex"><span>ALL-TIME HIGH RECORD</span><span>$${getPortfolioValue().toFixed(2)}</span></div><div class="row-flex"><span>Psychology STRENGTH</span><span>Confident</span></div><div class="row-flex"><span>Psychology WEAKNESS</span><span>No data yet</span></div></div>
-        <div class="card"><div class="card-title">Cloud Sync</div><div>Offline only for now</div><div>Offline only (not backed up). Sign in to back up your trades across devices.</div><button class="btn-outline btn-small" style="margin-top:8px">Sign In / Sign Up</button></div>
-        <div class="card"><div class="card-title">Theme & Support</div><div style="max-height:200px; overflow-y:auto">${themeList.map(key => { const t = themes[key]; const selected = appData.theme === key ? 'selected' : ''; return `<div class="theme-option ${selected}" data-theme="${key}"><div class="theme-color" style="background:${t.accent}"></div><div><strong>${t.name}</strong><br><span style="font-size:0.7rem">${key === 'electric-violet'?'Bold & creative':key==='neon-mint'?'Fresh & energetic':key==='ocean-blue'?'Calm & professional':key==='golden-hour'?'Luxurious & warm':key==='minimalist'?'Clean & simple':'Traditional register'}</span></div></div>`; }).join('')}</div><div class="flex-buttons" style="margin-top:12px"><button id="exportBackupBtn" class="btn-small btn-primary">Export backup</button><label for="importBackupInput" class="btn-small btn-secondary" style="cursor:pointer;">Import backup</label><input type="file" id="importBackupInput" accept=".json" style="display:none"/><button id="exportPDFBtn" class="btn-small btn-primary" style="background:#E67E22;">📄 Export PDF</button></div><button id="contributorsBtn" class="btn-outline btn-small" style="margin-top:12px; width:100%">🙏 Thanks community feedback</button></div>
-        <div class="card"><div class="card-title">Trading accounts</div>${appData.accounts.map(acc => `<div><strong>${acc.name}</strong><div class="row-flex"><span>STARTING: $${acc.starting.toFixed(2)}</span><span>CURRENT: $${acc.current.toFixed(2)}</span></div><div class="flex-buttons"><button class="deposit-btn btn-small btn-secondary" data-id="${acc.id}">Deposit</button><button class="withdraw-btn btn-small btn-secondary" data-id="${acc.id}">Withdraw</button></div></div>`).join('')}<button id="addAccountBtn" class="btn-primary btn-small" style="margin-top:12px">+ Add Account</button></div>`;
-        document.getElementById('mainContent').innerHTML = html;
-        document.querySelectorAll('.theme-option').forEach(opt => { opt.addEventListener('click', () => { applyTheme(opt.dataset.theme); renderAccounts(); }); });
-        document.getElementById('exportBackupBtn')?.addEventListener('click', () => { const dataStr = JSON.stringify(appData); const blob = new Blob([dataStr], {type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download="traderx_backup.json"; a.click(); });
-        document.getElementById('exportPDFBtn')?.addEventListener('click', exportToPDF);
-        const fileInput = document.getElementById('importBackupInput'); fileInput?.addEventListener('change', (e) => { if(e.target.files[0]){ const reader=new FileReader(); reader.onload=(ev)=>{ try{ const imp=JSON.parse(ev.target.result); if(imp.trades!==undefined){ appData=imp; saveToLocal(); render(); alert("Restore success!"); } else alert("Invalid"); } catch(err){ alert("Error"); } }; reader.readAsText(e.target.files[0]); } });
-        document.getElementById('contributorsBtn')?.addEventListener('click', () => document.getElementById('contributorsModal').classList.add('active'));
-        document.getElementById('closeContributors')?.addEventListener('click', () => document.getElementById('contributorsModal').classList.remove('active'));
-        document.querySelectorAll('.deposit-btn, .withdraw-btn').forEach(btn => { btn.addEventListener('click', (e) => { const action = btn.classList.contains('deposit-btn') ? 'deposit' : 'withdraw'; const accId = parseInt(btn.dataset.id); openFundModal(accId, action); }); });
-        document.getElementById('addAccountBtn')?.addEventListener('click', () => alert("Fitur tambah akun (simulasi)"));
-    }
-
-    function openFundModal(accId, action) {
-        const modal = document.getElementById('fundModal');
-        const title = action === 'deposit' ? 'Deposit' : 'Withdraw';
-        document.getElementById('fundAction').innerText = title;
-        modal.classList.add('active');
-        const confirmBtn = document.getElementById('confirmFundBtn');
-        confirmBtn.onclick = () => {
-            const amount = parseFloat(document.getElementById('fundAmount').value);
-            if(isNaN(amount) || amount <=0) return;
-            const acc = appData.accounts.find(a => a.id === accId);
-            if(acc) {
-                if(action === 'deposit') acc.current += amount;
-                else if(acc.current - amount >= 0) acc.current -= amount;
-                else alert("Saldo tidak cukup");
-                saveToLocal();
-                renderAccounts();
+    function renderSignalPage() {
+        const container = document.getElementById("signalPage");
+        let html = `<div class="card"><h2>📡 Live Trading Signals</h2><p>Confidence & real-time status</p></div>`;
+        signals.forEach(sig => {
+            const isLocked = sig.premium && !currentUser?.premium;
+            if(isLocked) {
+                html += `<div class="signal-card premium-blur" style="filter: blur(5px);"><div class="flex-between"><span><i class="fas fa-lock"></i> ${sig.pair}</span><span class="badge">🔒 Premium</span></div><div>Entry: ${sig.entry} | TP: ${sig.tp} | SL: ${sig.sl}</div><div>Confidence ${sig.confidence}%</div><div>Status: ${sig.status}</div></div>`;
+            } else {
+                html += `<div class="signal-card"><div class="flex-between"><span><b>${sig.pair}</b></span><span class="badge">${sig.status}</span></div><div>Entry: ${sig.entry} | TP: ${sig.tp} | SL: ${sig.sl}</div><div>Confidence: ${sig.confidence}% | ⏳ ${sig.timeLeft}</div></div>`;
             }
-            modal.classList.remove('active');
-        };
-        document.getElementById('closeFundModal').onclick = () => modal.classList.remove('active');
+        });
+        if(!currentUser?.premium) html += `<div class="card" style="text-align:center"><button class="glass-btn primary" id="upgradeSignalBtn">🔓 Unlock Premium Signals →</button></div>`;
+        container.innerHTML = html;
+        document.getElementById("upgradeSignalBtn")?.addEventListener("click", ()=> switchPage("membership"));
     }
 
-    function updateAccountAfterTrade() {
-        const totalPnl = appData.trades.reduce((s,t)=>s+t.pnl,0);
-        appData.accounts.forEach(acc => { acc.current = acc.starting + totalPnl; });
-        saveToLocal();
+    function renderEducationPage() {
+        const container = document.getElementById("educationPage");
+        let modulesHtml = '';
+        educationModules.forEach(mod => {
+            const isLocked = mod.premium && !currentUser?.premium;
+            if(isLocked) {
+                modulesHtml += `<div class="module-card premium-blur" style="filter: blur(4px);"><div class="flex-between"><span><i class="fas fa-lock"></i> ${mod.title}</span><span>🔒</span></div><p>${mod.desc}</p></div>`;
+            } else {
+                modulesHtml += `<div class="module-card"><div class="flex-between"><span><b>${mod.title}</b></span><i class="fas fa-play-circle" style="color:#2A6DFF"></i></div><p>${mod.desc}</p><iframe width="100%" height="120" src="https://www.youtube.com/embed/${mod.videoId}?autoplay=0" style="border-radius:16px; margin-top:8px;"></iframe></div>`;
+            }
+        });
+        if(!currentUser?.premium) modulesHtml += `<div class="card"><button class="glass-btn primary" id="upgradeEduBtn">🎓 Unlock All Premium Modules</button></div>`;
+        container.innerHTML = `<div class="card"><h3>📚 Trader X Academy</h3><p>Master the markets</p></div>${modulesHtml}`;
+        document.getElementById("upgradeEduBtn")?.addEventListener("click", ()=> switchPage("membership"));
     }
 
-    function openTradeModal() {
-        const modal = document.getElementById('tradeModal');
-        modal.classList.add('active');
-        document.querySelectorAll('.symbol-chip').forEach(chip => { chip.onclick = () => { document.getElementById('tradeSymbol').value = chip.dataset.sym; }; });
-        document.querySelectorAll('.dir-btn').forEach(btn => { btn.onclick = () => { document.querySelectorAll('.dir-btn').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); }; });
-        document.getElementById('saveTradeBtn').onclick = () => {
-            const symbol = document.getElementById('tradeSymbol').value.trim();
-            const date = document.getElementById('tradeDate').value;
-            const direction = document.querySelector('.dir-btn.selected')?.innerText.split(' ')[0] || "BUY";
-            const lot = parseFloat(document.getElementById('lotSize').value);
-            let pnl = parseFloat(document.getElementById('tradePnl').value);
-            const comm = parseFloat(document.getElementById('commission').value) || 0;
-            pnl = pnl - comm;
-            if(isNaN(pnl)) return;
-            const session = "Asia";
-            const newTrade = { id: Date.now(), symbol, date, direction, lotSize: lot, pnl, session, commission: comm };
-            appData.trades.push(newTrade);
-            updateStrategyStats();
-            updateAccountAfterTrade();
-            saveToLocal();
-            modal.classList.remove('active');
-            render();
-        };
-        document.getElementById('closeTradeModal').onclick = () => modal.classList.remove('active');
-        document.querySelector('.dir-btn').classList.add('selected');
+    function renderJournalPage() {
+        const container = document.getElementById("journalPage");
+        let journalHtml = `<div class="card"><h3>➕ Add Trade</h3><input id="tradePair" placeholder="Pair (BTC/USD)"><input id="entryPrice" type="number" placeholder="Entry Price"><input id="exitPrice" type="number" placeholder="Exit Price"><input id="lots" type="number" placeholder="Lots (0.01)"><button class="glass-btn primary" id="addTradeBtn">Add & Calculate P/L</button></div>`;
+        journalHtml += `<div class="card"><h3>📜 Trade History</h3>`;
+        if(currentUser?.journalEntries && currentUser.journalEntries.length) {
+            currentUser.journalEntries.forEach(entry => {
+                journalHtml += `<div class="journal-item"><div><b>${entry.pair}</b> | Entry:${entry.entry} Exit:${entry.exit} Lots:${entry.lots}<br><span class="${entry.profit>=0?'profit-text':'loss-text'}">${entry.profit>=0?'+':''}$${entry.profit.toFixed(2)}</span><br><small>${new Date(entry.date).toLocaleString()}</small></div><button class="deleteJournalBtn" data-id="${entry.id}"><i class="fas fa-trash"></i></button></div>`;
+            });
+        } else journalHtml += `<div>No trades yet</div>`;
+        journalHtml += `</div>`;
+        container.innerHTML = journalHtml;
+        document.getElementById("addTradeBtn")?.addEventListener("click", () => {
+            const pair = document.getElementById("tradePair").value;
+            const entry = parseFloat(document.getElementById("entryPrice").value);
+            const exit = parseFloat(document.getElementById("exitPrice").value);
+            const lots = parseFloat(document.getElementById("lots").value);
+            if(pair && !isNaN(entry) && !isNaN(exit) && !isNaN(lots)) addJournalEntry(pair, entry, exit, lots);
+            else showToast("Invalid trade data");
+            renderJournalPage();
+        });
+        document.querySelectorAll(".deleteJournalBtn").forEach(btn => btn.addEventListener("click", (e) => deleteJournalEntry(parseInt(btn.dataset.id))));
     }
 
-    function openSetupModal() {
-        const modal = document.getElementById('setupModal');
-        modal.classList.add('active');
-        document.getElementById('saveSetupBtn').onclick = () => {
-            const name = document.getElementById('setupName').value.trim();
-            if(!name) return;
-            appData.tradeSetups.push({ id: Date.now(), name, desc: document.getElementById('setupDesc').value, tradesCount:0, totalPnl:0, winRate:0 });
-            saveToLocal();
-            modal.classList.remove('active');
-            render();
-        };
-        document.getElementById('closeSetupModal').onclick = () => modal.classList.remove('active');
+    function renderCalculatorPage() {
+        const container = document.getElementById("calculatorPage");
+        container.innerHTML = `<div class="card"><h3>🧮 Trading Calculator</h3><label>Balance ($)</label><input id="calcBalance" type="number" value="10000"><label>Risk %</label><input id="calcRisk" type="number" value="1.5"><label>Entry Price</label><input id="calcEntry" type="number" value="1.0925"><label>Stop Loss</label><input id="calcSL" type="number" value="1.0880"><div class="glass-btn" id="computeRiskBtn">Calculate</div><div id="calcResult" style="margin-top:20px; background:#1A2A44; padding:16px; border-radius:24px;"></div></div>`;
+        document.getElementById("computeRiskBtn")?.addEventListener("click", () => {
+            const balance = parseFloat(document.getElementById("calcBalance").value);
+            const riskPct = parseFloat(document.getElementById("calcRisk").value);
+            const entry = parseFloat(document.getElementById("calcEntry").value);
+            const sl = parseFloat(document.getElementById("calcSL").value);
+            if(isNaN(balance) || isNaN(riskPct) || isNaN(entry) || isNaN(sl)) return;
+            const riskAmount = balance * (riskPct / 100);
+            const distance = Math.abs(entry - sl);
+            const lotSize = riskAmount / (distance * 1000);
+            document.getElementById("calcResult").innerHTML = `<div>💰 Risk Amount: $${riskAmount.toFixed(2)}</div><div>📏 Distance: ${distance} pips</div><div>⚖️ Suggested Lot Size: ${lotSize.toFixed(3)} lots</div>`;
+        });
     }
 
-    function render() {
-        if(activeTab === 'home') renderHome();
-        else if(activeTab === 'journal') renderJournal();
-        else if(activeTab === 'calendar') renderCalendar();
-        else if(activeTab === 'setup') renderTradeSetup();
-        else if(activeTab === 'accounts') renderAccounts();
-        document.querySelectorAll('.nav-item').forEach(btn => { if(btn.dataset.tab === activeTab) btn.classList.add('active'); else btn.classList.remove('active'); });
+    function renderNewsPage() {
+        const container = document.getElementById("newsPage");
+        container.innerHTML = `<div class="card"><h3>📰 Financial News</h3></div>${newsArticles.map(n => `<div class="card" style="display:flex; gap:16px;"><img src="${n.image}" width="60" height="60" style="border-radius:20px"><div><b>${n.title}</b><p>${n.desc}</p><small>${n.date}</small></div></div>`).join('')}`;
     }
 
-    function initNavigation() { document.querySelectorAll('.nav-item').forEach(btn => { btn.addEventListener('click', () => { activeTab = btn.dataset.tab; render(); }); }); }
-
-    function initDemoTrade() {
-        if(appData.trades.length === 0) {
-            appData.trades.push({ id: Date.now(), symbol: "XAUUSD", date: "2026-04-03", direction: "BUY", lotSize: 1.00, pnl: 11.00, session: "Asia", commission: 0 });
-            updateAccountAfterTrade();
-            updateStrategyStats();
-            saveToLocal();
-        }
+    function renderProfilePage() {
+        const container = document.getElementById("profilePage");
+        container.innerHTML = `<div class="card" style="text-align:center"><i class="fas fa-user-astronaut fa-4x"></i><h2>${currentUser?.name}</h2><p>${currentUser?.email}</p><span class="badge">${currentUser?.premium ? "✨ PREMIUM" : "⭐ FREE"}</span></div>
+        <div class="card"><label>Edit Name</label><input id="editNameInput" value="${currentUser?.name}"><button class="glass-btn primary" id="saveProfileBtn">Save Changes</button><hr><button class="glass-btn" id="upgradeProfileBtn">💎 Upgrade Membership</button><button class="glass-btn" id="logoutBtn">Logout</button></div>`;
+        document.getElementById("saveProfileBtn")?.addEventListener("click", () => {
+            const newName = document.getElementById("editNameInput").value;
+            if(newName && currentUser) { currentUser.name = newName; updateUserInArray(currentUser); renderProfilePage(); renderDashboardPage(); showToast("Profile updated"); }
+        });
+        document.getElementById("upgradeProfileBtn")?.addEventListener("click", () => switchPage("membership"));
+        document.getElementById("logoutBtn")?.addEventListener("click", () => { localStorage.removeItem("traderx_currentUser"); window.location.reload(); });
     }
 
-    loadTheme();
-    loadData();
-    initDemoTrade();
-    initNavigation();
-    render();
+    function renderMembershipPage() {
+        const container = document.getElementById("membershipPage");
+        container.innerHTML = `<div class="card"><h3>💎 Membership Plans</h3><p>Upgrade to premium and unlock all signals, education modules, and advanced features.</p></div>
+        <div class="card"><div class="flex-between"><span>📆 Monthly Premium</span><span>$29.99/mo</span></div><button class="glass-btn primary" id="upgradeMonthlyBtn">Upgrade Monthly</button></div>
+        <div class="card"><div class="flex-between"><span>⚡ Lifetime Access</span><span>$199 one-time</span></div><button class="glass-btn primary" id="upgradeLifetimeBtn">Get Lifetime</button></div>`;
+        document.getElementById("upgradeMonthlyBtn")?.addEventListener("click", () => { if(currentUser) { currentUser.premium = true; updateUserInArray(currentUser); showToast("Premium Activated! Refresh pages."); renderMembershipPage(); renderDashboardPage(); renderSignalPage(); renderEducationPage(); } });
+        document.getElementById("upgradeLifetimeBtn")?.addEventListener("click", () => { if(currentUser) { currentUser.premium = true; updateUserInArray(currentUser); showToast("Lifetime Premium Unlocked!"); renderMembershipPage(); renderDashboardPage(); renderSignalPage(); renderEducationPage(); } });
+    }
+
+    // ----- PAGE SWITCHING with BOTTOM NAV & SIDEBAR -----
+    function switchPage(pageId) {
+        // Update pages visibility
+        document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
+        document.getElementById(`${pageId}Page`).classList.add("active-page");
+        
+        // Update bottom navigation active class
+        document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
+        const activeNav = document.querySelector(`.nav-item[data-nav="${pageId}"]`);
+        if(activeNav) activeNav.classList.add("active");
+        
+        // Render content
+        if(pageId === "dashboard") renderDashboardPage();
+        else if(pageId === "signal") renderSignalPage();
+        else if(pageId === "education") renderEducationPage();
+        else if(pageId === "journal") renderJournalPage();
+        else if(pageId === "calculator") renderCalculatorPage();
+        else if(pageId === "news") renderNewsPage();
+        else if(pageId === "profile") renderProfilePage();
+        else if(pageId === "membership") renderMembershipPage();
+        
+        closeSidebar();
+    }
+
+    function closeSidebar() { document.getElementById("sidebar").classList.remove("open"); document.getElementById("sidebarOverlay").style.display = "none"; }
+    function openSidebar() { document.getElementById("sidebar").classList.add("open"); document.getElementById("sidebarOverlay").style.display = "block"; }
+    function showToast(msg) { const t = document.createElement("div"); t.className = "toast-msg"; t.innerHTML = `<i class="fas fa-bell"></i> ${msg}`; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
+
+    // Auth handlers
+    function afterLogin(user) {
+        currentUser = user;
+        saveCurrentUser();
+        document.getElementById("authContainer").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+        initData();
+        startActivitySimulation();
+        renderDashboardPage();
+        switchPage("dashboard");
+    }
+    document.getElementById("doLoginBtn")?.addEventListener("click", () => {
+        const email = document.getElementById("loginEmail").value;
+        const pwd = document.getElementById("loginPassword").value;
+        const user = users.find(u => u.email === email && u.password === pwd);
+        if(user) afterLogin(user);
+        else showToast("Invalid credentials");
+    });
+    document.getElementById("doRegisterBtn")?.addEventListener("click", () => {
+        const name = document.getElementById("regName").value;
+        const email = document.getElementById("regEmail").value;
+        const pwd = document.getElementById("regPassword").value;
+        if(!name || !email || !pwd) return showToast("Fill all fields");
+        if(users.find(u => u.email === email)) return showToast("Email exists");
+        const newUser = { id: Date.now(), name, email, password: pwd, premium: false, journalEntries: [] };
+        users.push(newUser);
+        saveUsers();
+        afterLogin(newUser);
+    });
+    document.getElementById("showRegisterBtn")?.addEventListener("click", () => { document.getElementById("loginForm").style.display = "none"; document.getElementById("registerForm").style.display = "block"; });
+    document.getElementById("showLoginBtn")?.addEventListener("click", () => { document.getElementById("registerForm").style.display = "none"; document.getElementById("loginForm").style.display = "block"; });
+    document.getElementById("menuToggleBtn")?.addEventListener("click", openSidebar);
+    document.getElementById("sidebarOverlay")?.addEventListener("click", closeSidebar);
+    document.getElementById("notifBellBtn")?.addEventListener("click", () => showToast("🔔 New signal: BTC breakout incoming"));
+    
+    // Sidebar menu listeners
+    document.querySelectorAll(".sidebar-item[data-page]").forEach(el => el.addEventListener("click", () => switchPage(el.dataset.page)));
+    document.getElementById("sidebarMembership")?.addEventListener("click", () => switchPage("membership"));
+    
+    // Bottom navigation listeners
+    document.querySelectorAll(".nav-item").forEach(btn => btn.addEventListener("click", () => switchPage(btn.dataset.nav)));
+    
+    // Initial load
+    loadUsers();
+    loadCurrentSession();
+    if(currentUser) {
+        document.getElementById("authContainer").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+        initData();
+        startActivitySimulation();
+        renderDashboardPage();
+        switchPage("dashboard");
+    } else {
+        document.getElementById("authContainer").style.display = "flex";
+        document.getElementById("mainApp").style.display = "none";
+    }
 </script>
 </body>
 </html>
