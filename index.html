@@ -33,7 +33,7 @@
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
             position: relative;
             padding-top: 70px;
-            padding-bottom: 80px; /* space for bottom nav */
+            padding-bottom: 80px;
         }
 
         /* Scrollbar */
@@ -137,7 +137,7 @@
             color: #FFD966;
         }
 
-        /* BOTTOM NAVIGATION (NEW) */
+        /* BOTTOM NAVIGATION */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -331,6 +331,35 @@
             width: 100%;
             border: 1px solid #2A6DFF;
         }
+
+        /* Calculator custom styles */
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .calc-label {
+            font-weight: 600;
+            color: #B0C4FF;
+        }
+        .calc-value {
+            font-weight: 700;
+            color: #00E6B2;
+        }
+        .step-item {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #2A3A55;
+            padding: 8px 0;
+        }
+        .tips-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 12px;
+            margin-top: 16px;
+        }
     </style>
 </head>
 <body>
@@ -393,7 +422,7 @@
         <div id="profilePage" class="page"></div>
         <div id="membershipPage" class="page"></div>
 
-        <!-- BOTTOM NAVIGATION BAR (NEW) -->
+        <!-- BOTTOM NAVIGATION BAR -->
         <div class="bottom-nav">
             <button class="nav-item" data-nav="dashboard"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-item" data-nav="signal"><i class="fas fa-chart-line"></i><span>Signals</span></button>
@@ -405,7 +434,7 @@
 </div>
 
 <script>
-    // ---------- DATA & STATE ----------
+    // ---------- DATA & STATE (unchanged except calculator) ----------
     let currentUser = null;
     let users = [];
     let signals = [];
@@ -541,7 +570,7 @@
         }, 8000);
     }
 
-    // ---------- RENDER PAGES (same as before, but we keep all) ----------
+    // ---------- RENDER PAGES (unchanged except calculator) ----------
     function renderDashboardPage() {
         const container = document.getElementById("dashboardPage");
         const totalPnL = getTotalPnL();
@@ -629,20 +658,88 @@
         document.querySelectorAll(".deleteJournalBtn").forEach(btn => btn.addEventListener("click", (e) => deleteJournalEntry(parseInt(btn.dataset.id))));
     }
 
+    // NEW CALCULATOR PAGE (matching the design from image)
     function renderCalculatorPage() {
         const container = document.getElementById("calculatorPage");
-        container.innerHTML = `<div class="card"><h3>🧮 Trading Calculator</h3><label>Balance ($)</label><input id="calcBalance" type="number" value="10000"><label>Risk %</label><input id="calcRisk" type="number" value="1.5"><label>Entry Price</label><input id="calcEntry" type="number" value="1.0925"><label>Stop Loss</label><input id="calcSL" type="number" value="1.0880"><div class="glass-btn" id="computeRiskBtn">Calculate</div><div id="calcResult" style="margin-top:20px; background:#1A2A44; padding:16px; border-radius:24px;"></div></div>`;
-        document.getElementById("computeRiskBtn")?.addEventListener("click", () => {
-            const balance = parseFloat(document.getElementById("calcBalance").value);
-            const riskPct = parseFloat(document.getElementById("calcRisk").value);
-            const entry = parseFloat(document.getElementById("calcEntry").value);
-            const sl = parseFloat(document.getElementById("calcSL").value);
-            if(isNaN(balance) || isNaN(riskPct) || isNaN(entry) || isNaN(sl)) return;
-            const riskAmount = balance * (riskPct / 100);
-            const distance = Math.abs(entry - sl);
-            const lotSize = riskAmount / (distance * 1000);
-            document.getElementById("calcResult").innerHTML = `<div>💰 Risk Amount: $${riskAmount.toFixed(2)}</div><div>📏 Distance: ${distance} pips</div><div>⚖️ Suggested Lot Size: ${lotSize.toFixed(3)} lots</div>`;
-        });
+        container.innerHTML = `
+            <div class="card">
+                <h3><i class="fas fa-calculator"></i> Forex Calculator</h3>
+                <div class="calc-row"><span class="calc-label">Account Balance (USD)</span><input type="number" id="calcBalance" value="100" step="1"></div>
+                <div class="calc-row"><span class="calc-label">Risk Percentage (%)</span><input type="number" id="calcRiskPercent" value="20" step="0.5"></div>
+                <div class="calc-row"><span class="calc-label">Risk to Reward Ratio</span><input type="text" id="calcRR" value="1:4" placeholder="1:4"></div>
+                <div class="calc-row"><span class="calc-label">Stop Loss (pip)</span><input type="number" id="calcStopLoss" value="10" step="1"></div>
+                <div class="calc-row"><span class="calc-label">Step</span><input type="number" id="calcSteps" value="6" min="1" max="10"></div>
+                <button class="glass-btn primary" id="calculateBtn" style="width:100%; margin-top:8px;">Calculate</button>
+                
+                <div id="calcResults" style="margin-top:24px;">
+                    <!-- results will be injected -->
+                </div>
+                <div class="tips-box">
+                    <strong>Trading Tips:</strong><br>
+                    - Never risk more than 2% per trade<br>
+                    - Consider reducing risk after consecutive losses<br>
+                    - Monitor your maximum drawdown carefully<br>
+                    - Adjust position size based on volatility
+                </div>
+            </div>
+        `;
+        // Attach event listener
+        document.getElementById("calculateBtn")?.addEventListener("click", () => updateCalculator());
+        updateCalculator(); // initial calculation
+    }
+
+    function updateCalculator() {
+        let balance = parseFloat(document.getElementById("calcBalance")?.value) || 0;
+        let riskPercent = parseFloat(document.getElementById("calcRiskPercent")?.value) || 0;
+        let rrStr = document.getElementById("calcRR")?.value || "1:4";
+        let stopLossPip = parseFloat(document.getElementById("calcStopLoss")?.value) || 10;
+        let steps = parseInt(document.getElementById("calcSteps")?.value) || 6;
+        
+        // Parse risk to reward ratio (e.g., "1:4")
+        let rrParts = rrStr.split(":");
+        let riskReward = rrParts.length === 2 ? parseFloat(rrParts[1]) / parseFloat(rrParts[0]) : 4;
+        if(isNaN(riskReward)) riskReward = 4;
+        
+        let amountAtRisk = balance * (riskPercent / 100);
+        // Lots calculation: standard forex 1 lot = $10 per pip, so lots = amountAtRisk / (stopLossPip * 10)
+        let lots = amountAtRisk / (stopLossPip * 10);
+        let pipValue = lots * 10; // in USD per pip
+        let netStopLoss = amountAtRisk;
+        let netTakeProfit = amountAtRisk * riskReward;
+        
+        // Profit steps (compounding with factor 1.8 as per image)
+        let stepProfit = netTakeProfit;
+        let cumulative = balance;
+        let stepsHtml = `<div style="margin-top:16px;"><strong>Profit Steps:</strong></div>`;
+        for(let i=1; i<=steps; i++) {
+            let profitThisStep = stepProfit;
+            cumulative += profitThisStep;
+            stepsHtml += `<div class="step-item"><span>Profit Step ${i}:</span><span>${profitThisStep.toFixed(1)} USD</span><span class="calc-value">${cumulative.toFixed(1)} USD</span></div>`;
+            stepProfit = stepProfit * 1.8; // multiplier from image
+        }
+        
+        // Monthly projections (simplified: 20 trading days, assume same risk per day)
+        let monthlyReturn = netTakeProfit * 20; // rough projection
+        let monthlyPercent = (monthlyReturn / balance) * 100;
+        // Risk metrics
+        let sharpeMock = (riskReward * 0.6).toFixed(2);
+        let maxDrawdown = (amountAtRisk * 3).toFixed(0);
+        
+        let resultsHtml = `
+            <div style="background:rgba(0,0,0,0.3); border-radius:24px; padding:12px; margin-top:16px;">
+                <div class="calc-row"><span class="calc-label">Amount at Risk:</span><span class="calc-value">${amountAtRisk.toFixed(1)} USD</span></div>
+                <div class="calc-row"><span class="calc-label">Pip Value:</span><span class="calc-value">${pipValue.toFixed(2)} USD</span></div>
+                <div class="calc-row"><span class="calc-label">Lots:</span><span class="calc-value">${lots.toFixed(2)}</span></div>
+                <div class="calc-row"><span class="calc-label">Net Stop Loss:</span><span class="calc-value">${netStopLoss.toFixed(1)} USD</span></div>
+                <div class="calc-row"><span class="calc-label">Net Take Profit:</span><span class="calc-value">${netTakeProfit.toFixed(1)} USD</span></div>
+            </div>
+            ${stepsHtml}
+            <div style="margin-top:20px;"><strong>Detailed Analysis</strong></div>
+            <div class="calc-row"><span class="calc-label">Monthly Projections:</span><span>≈ $${monthlyReturn.toFixed(0)} (${monthlyPercent.toFixed(1)}%)</span></div>
+            <div class="calc-row"><span class="calc-label">Risk Metrics:</span><span>Sharpe (est): ${sharpeMock} | Max DD: $${maxDrawdown}</span></div>
+        `;
+        const resultsDiv = document.getElementById("calcResults");
+        if(resultsDiv) resultsDiv.innerHTML = resultsHtml;
     }
 
     function renderNewsPage() {
@@ -671,18 +768,14 @@
         document.getElementById("upgradeLifetimeBtn")?.addEventListener("click", () => { if(currentUser) { currentUser.premium = true; updateUserInArray(currentUser); showToast("Lifetime Premium Unlocked!"); renderMembershipPage(); renderDashboardPage(); renderSignalPage(); renderEducationPage(); } });
     }
 
-    // ----- PAGE SWITCHING with BOTTOM NAV & SIDEBAR -----
+    // ----- PAGE SWITCHING -----
     function switchPage(pageId) {
-        // Update pages visibility
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page"));
         document.getElementById(`${pageId}Page`).classList.add("active-page");
-        
-        // Update bottom navigation active class
         document.querySelectorAll(".nav-item").forEach(btn => btn.classList.remove("active"));
         const activeNav = document.querySelector(`.nav-item[data-nav="${pageId}"]`);
         if(activeNav) activeNav.classList.add("active");
         
-        // Render content
         if(pageId === "dashboard") renderDashboardPage();
         else if(pageId === "signal") renderSignalPage();
         else if(pageId === "education") renderEducationPage();
@@ -734,11 +827,8 @@
     document.getElementById("sidebarOverlay")?.addEventListener("click", closeSidebar);
     document.getElementById("notifBellBtn")?.addEventListener("click", () => showToast("🔔 New signal: BTC breakout incoming"));
     
-    // Sidebar menu listeners
     document.querySelectorAll(".sidebar-item[data-page]").forEach(el => el.addEventListener("click", () => switchPage(el.dataset.page)));
     document.getElementById("sidebarMembership")?.addEventListener("click", () => switchPage("membership"));
-    
-    // Bottom navigation listeners
     document.querySelectorAll(".nav-item").forEach(btn => btn.addEventListener("click", () => switchPage(btn.dataset.nav)));
     
     // Initial load
