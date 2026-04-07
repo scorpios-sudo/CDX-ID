@@ -360,6 +360,64 @@
             padding: 12px;
             margin-top: 16px;
         }
+
+        /* News page custom styles */
+        .news-category-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .news-category-chip {
+            background: rgba(42, 109, 255, 0.15);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .news-category-chip.active, .news-category-chip:hover {
+            background: #2A6DFF;
+            color: white;
+        }
+        .news-video-card {
+            background: #0E121C;
+            border-radius: 20px;
+            overflow: hidden;
+            flex: 0 0 260px;
+            scroll-snap-align: start;
+        }
+        .news-video-thumb {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #1F2A44, #0A0F18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #2A6DFF;
+        }
+        .news-list-item {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(42, 109, 255, 0.2);
+            padding-bottom: 14px;
+        }
+        .news-list-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+        .see-all-link {
+            text-align: right;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #2A6DFF;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -434,16 +492,31 @@
 </div>
 
 <script>
-    // ---------- DATA & STATE (unchanged except calculator) ----------
+    // ---------- DATA & STATE ----------
     let currentUser = null;
     let users = [];
     let signals = [];
     let educationModules = [];
-    let newsArticles = [];
+    let newsArticles = [];  // will be populated with rich data
     let activityFeed = [];
     let chartInstance = null;
 
-    // Initial dummy data
+    // Initial dummy data for news (Kitco style)
+    function initNewsData() {
+        newsArticles = [
+            { id: 1, title: "Gold declines ahead of ceasefire deadline", date: "Apr 07, 2026, 04:27", source: "Kitco Commentaries", category: "Economy", image: "https://picsum.photos/id/26/100/100" },
+            { id: 2, title: "Gold's demand drivers 'should once again reassert themselves' after Iran war shock fades – Merrill's Avioli", date: "Apr 07, 2026, 01:41", source: "Kitco News", category: "Metals", image: "https://picsum.photos/id/29/100/100" },
+            { id: 3, title: "Monday's charts for gold, silver, platinum and palladium, April 6", date: "Apr 06, 2026, 23:35", source: "Kitco Commentaries", category: "Metals", image: "https://picsum.photos/id/35/100/100" },
+            { id: 4, title: "Gold slightly up, silver slightly down amid conflicting fundamentals", date: "Apr 06, 2026, 23:25", source: "Kitco News", category: "Metals", image: "https://picsum.photos/id/20/100/100" },
+            { id: 5, title: "Bank of France sells its 129-tonne US gold reserve, then buys it back in Europe for tidy $15 billion profit", date: "Apr 06, 2026, 22:39", source: "Kitco News", category: "Markets", image: "https://picsum.photos/id/0/100/100" },
+            { id: 6, title: "Spot gold at $4,667/oz after ISM Services PMI falls to 54 in March as Iran price shocks raise concern", date: "Apr 06, 2026, 21:01", source: "Kitco News", category: "Metals", image: "https://picsum.photos/id/42/100/100" },
+            { id: 7, title: "Where are the stops? Monday, April 6, gold and silver", date: "Apr 06, 2026, 19:17", source: "Kitco Commentaries", category: "Commentaries", image: "https://picsum.photos/id/15/100/100" },
+            { id: 8, title: "Bitcoin tests $70k resistance as institutional inflows surge", date: "Apr 07, 2026, 09:12", source: "Crypto News", category: "Crypto", image: "https://picsum.photos/id/24/100/100" },
+            { id: 9, title: "Mining stocks rally as gold prices hold above $4,600", date: "Apr 06, 2026, 14:30", source: "Mining Journal", category: "Mining", image: "https://picsum.photos/id/33/100/100" }
+        ];
+    }
+
+    // Other dummy data
     function initData() {
         signals = [
             { id: 1, pair: "BTC/USD", entry: 68420, tp: 69500, sl: 67800, confidence: 87, status: "Running", timeLeft: "2h", premium: false },
@@ -458,11 +531,7 @@
             { id: 3, title: "Advanced Entry Precision", desc: "Supply/demand + FVG", premium: true, videoId: "3nXLaO--DqM" },
             { id: 4, title: "Market Profile Mastery", desc: "Volume profile analysis", premium: true, videoId: "LDU_Txk06tM" }
         ];
-        newsArticles = [
-            { id: 1, title: "Fed signals rate cuts in H2 2025", image: "https://picsum.photos/id/26/100/100", desc: "Dovish stance boosts crypto", date: "2h ago" },
-            { id: 2, title: "Gold breaks resistance, targets $2400", image: "https://picsum.photos/id/29/100/100", desc: "Safe haven demand surges", date: "5h ago" },
-            { id: 3, title: "Bitcoin dominance reaches 54%", image: "https://picsum.photos/id/20/100/100", desc: "Altcoin season awaits", date: "1d ago" }
-        ];
+        initNewsData();
         for(let i=0;i<5;i++) activityFeed.push(`📊 Market update: ${Math.random() > 0.5 ? 'Volatility increasing' : 'Liquidity sweep'}`);
     }
 
@@ -570,7 +639,7 @@
         }, 8000);
     }
 
-    // ---------- RENDER PAGES (unchanged except calculator) ----------
+    // ---------- RENDER PAGES (unchanged except news) ----------
     function renderDashboardPage() {
         const container = document.getElementById("dashboardPage");
         const totalPnL = getTotalPnL();
@@ -597,7 +666,7 @@
         const vidContainer = document.getElementById("mentorVideos");
         if(vidContainer) vidContainer.innerHTML = mentorVideos.map(v => `<div class="video-card"><iframe src="https://www.youtube.com/embed/${v.id}?autoplay=0&mute=1" allowfullscreen></iframe><div style="padding:8px">${v.title}</div></div>`).join('');
         const newsPreviewDiv = document.getElementById("newsPreviewDash");
-        if(newsPreviewDiv) newsPreviewDiv.innerHTML = newsArticles.slice(0,2).map(n => `<div class="flex-between"><img src="${n.image}" width="40" height="40" style="border-radius:12px"><div><b>${n.title}</b><br><small>${n.date}</small></div></div>`).join('');
+        if(newsPreviewDiv) newsPreviewDiv.innerHTML = newsArticles.slice(0,2).map(n => `<div class="flex-between"><img src="${n.image}" width="40" height="40" style="border-radius:12px"><div><b>${n.title.substring(0,30)}...</b><br><small>${n.date}</small></div></div>`).join('');
         renderDashboardChart();
         document.getElementById("quickJournalBtn")?.addEventListener("click", ()=> switchPage("journal"));
         document.getElementById("quickSignalBtn")?.addEventListener("click", ()=> switchPage("signal"));
@@ -658,7 +727,7 @@
         document.querySelectorAll(".deleteJournalBtn").forEach(btn => btn.addEventListener("click", (e) => deleteJournalEntry(parseInt(btn.dataset.id))));
     }
 
-    // NEW CALCULATOR PAGE (matching the design from image)
+    // NEW CALCULATOR PAGE
     function renderCalculatorPage() {
         const container = document.getElementById("calculatorPage");
         container.innerHTML = `
@@ -670,10 +739,7 @@
                 <div class="calc-row"><span class="calc-label">Stop Loss (pip)</span><input type="number" id="calcStopLoss" value="10" step="1"></div>
                 <div class="calc-row"><span class="calc-label">Step</span><input type="number" id="calcSteps" value="6" min="1" max="10"></div>
                 <button class="glass-btn primary" id="calculateBtn" style="width:100%; margin-top:8px;">Calculate</button>
-                
-                <div id="calcResults" style="margin-top:24px;">
-                    <!-- results will be injected -->
-                </div>
+                <div id="calcResults" style="margin-top:24px;"></div>
                 <div class="tips-box">
                     <strong>Trading Tips:</strong><br>
                     - Never risk more than 2% per trade<br>
@@ -683,9 +749,8 @@
                 </div>
             </div>
         `;
-        // Attach event listener
         document.getElementById("calculateBtn")?.addEventListener("click", () => updateCalculator());
-        updateCalculator(); // initial calculation
+        updateCalculator();
     }
 
     function updateCalculator() {
@@ -695,19 +760,16 @@
         let stopLossPip = parseFloat(document.getElementById("calcStopLoss")?.value) || 10;
         let steps = parseInt(document.getElementById("calcSteps")?.value) || 6;
         
-        // Parse risk to reward ratio (e.g., "1:4")
         let rrParts = rrStr.split(":");
         let riskReward = rrParts.length === 2 ? parseFloat(rrParts[1]) / parseFloat(rrParts[0]) : 4;
         if(isNaN(riskReward)) riskReward = 4;
         
         let amountAtRisk = balance * (riskPercent / 100);
-        // Lots calculation: standard forex 1 lot = $10 per pip, so lots = amountAtRisk / (stopLossPip * 10)
         let lots = amountAtRisk / (stopLossPip * 10);
-        let pipValue = lots * 10; // in USD per pip
+        let pipValue = lots * 10;
         let netStopLoss = amountAtRisk;
         let netTakeProfit = amountAtRisk * riskReward;
         
-        // Profit steps (compounding with factor 1.8 as per image)
         let stepProfit = netTakeProfit;
         let cumulative = balance;
         let stepsHtml = `<div style="margin-top:16px;"><strong>Profit Steps:</strong></div>`;
@@ -715,13 +777,11 @@
             let profitThisStep = stepProfit;
             cumulative += profitThisStep;
             stepsHtml += `<div class="step-item"><span>Profit Step ${i}:</span><span>${profitThisStep.toFixed(1)} USD</span><span class="calc-value">${cumulative.toFixed(1)} USD</span></div>`;
-            stepProfit = stepProfit * 1.8; // multiplier from image
+            stepProfit = stepProfit * 1.8;
         }
         
-        // Monthly projections (simplified: 20 trading days, assume same risk per day)
-        let monthlyReturn = netTakeProfit * 20; // rough projection
+        let monthlyReturn = netTakeProfit * 20;
         let monthlyPercent = (monthlyReturn / balance) * 100;
-        // Risk metrics
         let sharpeMock = (riskReward * 0.6).toFixed(2);
         let maxDrawdown = (amountAtRisk * 3).toFixed(0);
         
@@ -742,10 +802,75 @@
         if(resultsDiv) resultsDiv.innerHTML = resultsHtml;
     }
 
+    // ========== UPDATED NEWS PAGE (KITCO STYLE) ==========
+    let currentNewsFilter = "All";
     function renderNewsPage() {
         const container = document.getElementById("newsPage");
-        container.innerHTML = `<div class="card"><h3>📰 Financial News</h3></div>${newsArticles.map(n => `<div class="card" style="display:flex; gap:16px;"><img src="${n.image}" width="60" height="60" style="border-radius:20px"><div><b>${n.title}</b><p>${n.desc}</p><small>${n.date}</small></div></div>`).join('')}`;
+        // Categories as per image: Economy, Commentaries, Video, Press Releases, plus All, Metals, Crypto, Mining, Markets
+        const topCategories = ["All", "Economy", "Commentaries", "Video", "Press Releases"];
+        const bottomCategories = ["Metals", "Crypto", "Mining", "Markets"];
+        
+        const topChips = topCategories.map(cat => `<span class="news-category-chip ${currentNewsFilter === cat ? 'active' : ''}" data-filter="${cat}">${cat}</span>`).join('');
+        const bottomChips = bottomCategories.map(cat => `<span class="news-category-chip ${currentNewsFilter === cat ? 'active' : ''}" data-filter="${cat}">${cat}</span>`).join('');
+        
+        // Video section (simulated with YouTube style)
+        const videoItems = [
+            { title: "THE $4B GAP INVESTORS ARE WATCHING", author: "Ken Brinsden", desc: "Why PMET could be one of North America’s biggest lithium ..." },
+            { title: "The debt trap: Why gold pumps first and bitcoin follows", author: "Michael", desc: "Permanent inflation the $50 price ..." }
+        ];
+        const videoHtml = `<div class="scroll-x" style="margin-bottom: 12px;">${videoItems.map(v => `
+            <div class="news-video-card">
+                <div class="news-video-thumb"><i class="fas fa-play-circle fa-3x"></i></div>
+                <div style="padding: 12px;">
+                    <div style="font-weight:700; font-size:14px;">${v.title}</div>
+                    <div style="font-size:12px; color:#aaa;">${v.author}</div>
+                    <div style="font-size:12px; margin-top:4px;">${v.desc.substring(0,60)}...</div>
+                </div>
+            </div>
+        `).join('')}</div><div class="see-all-link" id="seeAllVideo">See all video <i class="fas fa-arrow-right"></i></div>`;
+        
+        // Filter news articles based on selected category
+        let filteredNews = newsArticles;
+        if(currentNewsFilter !== "All") {
+            filteredNews = newsArticles.filter(article => article.category === currentNewsFilter);
+        }
+        const newsListHtml = filteredNews.map(article => `
+            <div class="news-list-item">
+                <img src="${article.image}" alt="news">
+                <div style="flex:1;">
+                    <div style="font-weight:600; font-size:15px;">${article.title}</div>
+                    <div style="font-size:12px; color:#8E9AAF;">${article.date}</div>
+                    <div style="font-size:11px; color:#6D9EFF;">Source: ${article.source}</div>
+                </div>
+            </div>
+        `).join('');
+        
+        container.innerHTML = `
+            <div class="card">
+                <h2>Latest news</h2>
+                <div class="news-category-row">${topChips}</div>
+                <div class="news-category-row" style="border-top:1px solid rgba(42,109,255,0.2); padding-top:12px;">${bottomChips}</div>
+            </div>
+            <div class="card">
+                <h3>Video</h3>
+                ${videoHtml}
+            </div>
+            <div class="card">
+                <h3>News</h3>
+                <div id="newsListContainer">${newsListHtml || '<div>No news for this category</div>'}</div>
+            </div>
+        `;
+        
+        // Attach filter click events
+        document.querySelectorAll(".news-category-chip").forEach(chip => {
+            chip.addEventListener("click", (e) => {
+                currentNewsFilter = chip.getAttribute("data-filter");
+                renderNewsPage();  // re-render with new filter
+            });
+        });
+        document.getElementById("seeAllVideo")?.addEventListener("click", () => showToast("More videos coming soon!"));
     }
+    // ========== END NEWS PAGE ==========
 
     function renderProfilePage() {
         const container = document.getElementById("profilePage");
